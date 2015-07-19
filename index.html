@@ -2,8 +2,8 @@
 <html lang="en"> 
 <head> 
 	<meta charset="UTF-8" />
-	<title>Phaser - Making your first game, part 1</title>
-    <script src="//cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script>
+	<title>Link Runner WIP</title>
+    <script src="phaser.min.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -23,8 +23,13 @@ function preload() {
 	game.load.image('star', 'assets/star.png');
 	game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 
+	// from basic follow.js
+	game.load.image('background','assets/tests/debug-grid-1920x1920.png');
+
 }
 
+var worldWidth = 1920;
+var worldHeight = 600;
 var player;
 var platforms;
 var cursors;
@@ -37,8 +42,10 @@ function create() {
 	// Enable the Arcade Physics system
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
-	// Add a simple background
-	game.add.sprite(0, 0, 'sky');
+	// Add background
+	game.add.tileSprite(0, 0, 1920, 1920, 'background');
+
+	game.world.setBounds(0, 0, worldWidth, worldHeight);
 
 	// The platforms group will contain the ground and the two ledges
 	platforms = game.add.group();
@@ -50,7 +57,7 @@ function create() {
 	var ground = platforms.create(0, game.world.height - 64, 'ground');
 
 	// Scale ground to fit the width of the game (original sprite is 400x32)
-	ground.scale.setTo(2, 2);
+	ground.scale.setTo( (worldWidth / 400), 2);
 
 	// This stops the ground from falling away when you jump on it
 	ground.body.immovable = true;
@@ -100,6 +107,9 @@ function create() {
 
 	// Our controls
 	cursors = game.input.keyboard.createCursorKeys();
+
+	// Set the camera to follow the player
+	game.camera.follow(player)
 
 }
 
