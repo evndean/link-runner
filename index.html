@@ -60,17 +60,19 @@ function create() {
 	layer.resizeWorld();
 	layer.debugSettings.forceFullRedraw = true;
 
-	// Create the player and its settings
+	// Create player
 	player = game.add.sprite(100, 100, 'astronaut');
 
-	// Enable physics on the player
+	// Player physics
 	game.physics.enable(player);
-
-	// Player physics properties.
 	player.body.allowGravity = false;
 	player.body.collideWorldBounds = true;
+	player.body.velocity.setTo(0, 0);
+	player.body.bounce.setTo(0.3, 0.3);
+	player.body.maxVelocity.set(250);
+	player.body.drag.set(150);
 
-	// Two animations, walking left and right
+	// Player animations
 	player.animations.add('left', [1, 2], 10, true);
 	player.animations.add('right', [2, 1], 10, true);
 
@@ -97,7 +99,7 @@ function create() {
 	scoreText.fixedToCamera = true;
 	scoreText.cameraOffset.setTo(16, 16);
 
-	// Our controls
+	// Controls
 	cursors = game.input.keyboard.createCursorKeys();
 
 	// Set the camera to follow the player
@@ -114,49 +116,37 @@ function update() {
 	// Check to see if the player overlaps with a star. If it does, collect the star.
 	game.physics.arcade.overlap(player, stars, collectStar, null, this);
 
-	// Reset the players velocity
-	player.body.velocity.x = 0;
+	// Reset player acceleration
+	player.body.acceleration.setTo(0, 0);
 
 	// Make the sprite flip on center axis when switching directions.
 	player.anchor.setTo(0.5, 1)
 
 	if (cursors.left.isDown)
 	{
-		// Move to the left
-		player.body.velocity.x = -150;
-
+		player.body.acceleration.x = -250;
 		player.scale.x = -1;
-
 		player.animations.play('left');
 	}
 	else if (cursors.right.isDown)
 	{
-		// Move to the right
-		player.body.velocity.x = 150;
-
+		player.body.acceleration.x = 250;
 		player.scale.x = 1;
-
 		player.animations.play('right');
 	}
 	else
 	{
-		// Stand still
 		player.animations.stop();
-
 		player.frame = 0;
 	}
 
 	if (cursors.up.isDown)
 	{
-		player.body.velocity.y = -150;
+		player.body.acceleration.y -= 250;
 	}
 	else if (cursors.down.isDown)
 	{
-		player.body.velocity.y = 150;
-	}
-	else
-	{
-		player.body.velocity.y = 0
+		player.body.acceleration.y += 250;
 	}
 
 }
