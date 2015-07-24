@@ -18,8 +18,9 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 function preload() {
 
-	game.load.image('sky', 'assets/phaser/sky.png');
-	game.load.image('ground', 'assets/phaser/platform.png');
+	game.load.tilemap('map', 'assets/opengameart/station-tilemap-test.json', null, Phaser.Tilemap.TILED_JSON);
+	game.load.image('StationTileset', 'assets/opengameart/StationTileset.png');
+
 	game.load.image('star', 'assets/phaser/star.png');
 	game.load.spritesheet('astronaut', 'assets/opengameart/astronaut3_0.png', 29, 37);
 
@@ -28,10 +29,11 @@ function preload() {
 
 }
 
-var worldWidth = 1920;
-var worldHeight = 600;
+var worldWidth = 5000;
+var worldHeight = 1000;
 var player;
-var platforms;
+var map;
+var layer;
 var cursors;
 var stars;
 var score = 0;
@@ -43,37 +45,26 @@ function create() {
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
 	// Add background
-	game.add.tileSprite(0, 0, 1920, 1920, 'background');
+	game.add.tileSprite(0, 0, worldWidth, worldHeight, 'background');
 
 	game.world.setBounds(0, 0, worldWidth, worldHeight);
 
-	// The platforms group will contain the ground and the two ledges
-	platforms = game.add.group();
+	// Add tilemap
+	map = game.add.tilemap('map');
 
-	// Enable physics for any object that's created in this group
-	platforms.enableBody = true;
+	map.addTilesetImage('StationTileset');
 
-	// Create the ground
-	var ground = platforms.create(0, game.world.height - 64, 'ground');
+	map.setCollisionBetween(1, 12);  // Station Tilemap tiles
 
-	// Scale ground to fit the width of the game (original sprite is 400x32)
-	ground.scale.setTo( (worldWidth / 400), 2);
-
-	// This stops the ground from falling away when you jump on it
-	ground.body.immovable = true;
-
-	// Create two ledges
-	var ledge = platforms.create(400, 400, 'ground');
-	ledge.body.immovable = true;
-
-	ledge = platforms.create(-150, 250, 'ground');
-	ledge.body.immovable = true;
+	layer = map.createLayer('Platform Layer');
+	layer.resizeWorld();
+	layer.debugSettings.forceFullRedraw = true;
 
 	// Create the player and its settings
-	player = game.add.sprite(29, game.world.height - 100, 'astronaut');
+	player = game.add.sprite(100, 100, 'astronaut');
 
 	// Enable physics on the player
-	game.physics.arcade.enable(player);
+	game.physics.enable(player);
 
 	// Player physics properties.
 	player.body.bounce.y = 0.2;
@@ -90,10 +81,10 @@ function create() {
 	stars.enableBody = true;
 
 	// Here we'll create 12 of them evenly spaced apart
-	for (var i = 0; i < 12; i++)
+	for (var i = 0; i < 20; i++)
 	{
 		// Create a star inside of the 'stars' group
-		var star = stars.create(i * 70, 0, 'star');
+		var star = stars.create((i + 1) * 100, 0, 'star');
 
 		// Let gravity do its thing
 		star.body.gravity.y = 100;
@@ -117,9 +108,9 @@ function create() {
 
 function update() {
 
-	// Collide the player and the stars with the platforms
-	game.physics.arcade.collide(player, platforms);
-	game.physics.arcade.collide(stars, platforms);
+	// Collide the player and the stars with the tilemap
+	game.physics.arcade.collide(player, layer);
+	game.physics.arcade.collide(stars, layer);
 
 	// Check to see if the player overlaps with a star. If it does, collect the star.
 	game.physics.arcade.overlap(player, stars, collectStar, null, this);
@@ -157,15 +148,21 @@ function update() {
 	}
 
 	// Allow the player to jump if they are touching the ground.
-	if (cursors.up.isDown && player.body.touching.down)
+	if (cursors.up.isDown)
 	{
-		player.body.velocity.y = -350;
+		if (player.body.onFloor())
+		{
+			player.body.velocity.y = -350;
+		}
 	}
 
 	// Allow the player to drop fast if they are in the air.
-	if (cursors.down.isDown && !player.body.touching.down)
+	if (cursors.down.isDown)
 	{
-		player.body.velocity.y += 15;
+		if (!player.body.onFloor())
+		{
+			player.body.velocity.y += 15;
+		}
 	}
 
 }
