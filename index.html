@@ -67,8 +67,7 @@ function create() {
 	game.physics.enable(player);
 
 	// Player physics properties.
-	player.body.bounce.y = 0.2;
-	player.body.gravity.y = 300;
+	player.body.allowGravity = false;
 	player.body.collideWorldBounds = true;
 
 	// Two animations, walking left and right
@@ -147,22 +146,17 @@ function update() {
 		player.frame = 0;
 	}
 
-	// Allow the player to jump if they are touching the ground.
 	if (cursors.up.isDown)
 	{
-		if (player.body.onFloor())
-		{
-			player.body.velocity.y = -350;
-		}
+		player.body.velocity.y = -150;
 	}
-
-	// Allow the player to drop fast if they are in the air.
-	if (cursors.down.isDown)
+	else if (cursors.down.isDown)
 	{
-		if (!player.body.onFloor())
-		{
-			player.body.velocity.y += 15;
-		}
+		player.body.velocity.y = 150;
+	}
+	else
+	{
+		player.body.velocity.y = 0
 	}
 
 }
