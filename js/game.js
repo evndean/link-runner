@@ -205,6 +205,7 @@ function restart () {
 
 	// Revive the player
 	player.revive();
+	player.body.velocity.setTo(0, 0);
 	player.health = 100;
 	player.batteryLevel = 100;
 
