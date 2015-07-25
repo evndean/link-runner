@@ -32,11 +32,12 @@ var player;
 var lazers;
 var lazerTime = 0;
 var map;
-var layer;
+var platforms;
 var cursors;
 var fireButton;
 var score = 0;
-var scoreText;
+var healthText;
+var stateText;
 
 function create() {
 
@@ -49,17 +50,16 @@ function create() {
 
 	// Add tilemap
 	map = game.add.tilemap('map');
-
 	map.addTilesetImage('StationTileset');
-
 	map.setCollisionBetween(1, 12);  // Station Tilemap tiles
 
-	layer = map.createLayer('Platform Layer');
-	layer.resizeWorld();
-	layer.debugSettings.forceFullRedraw = true;
+	platforms = map.createLayer('Platform Layer');
+	platforms.resizeWorld();
+	platforms.debugSettings.forceFullRedraw = true;
 
 	// Create player
 	player = game.add.sprite(100, 100, 'astronaut');
+	player.health = 100;
 
 	// Player physics
 	game.physics.enable(player);
@@ -73,6 +73,7 @@ function create() {
 	// Player animations
 	player.animations.add('left', [1, 2], 10, true);
 	player.animations.add('right', [2, 1], 10, true);
+	player.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
 
 	// LAZERS!
 	lazers = game.add.group();
@@ -80,10 +81,17 @@ function create() {
 	lazers.physicsBodyType = Phaser.Physics.ARCADE;
 	lazers.createMultiple(30, 'lazerBeam');
 
-	// The score
-	scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
-	scoreText.fixedToCamera = true;
-	scoreText.cameraOffset.setTo(16, 16);
+	// Display player health
+	healthText = game.add.text(16, 16, 'Health: ' + player.health, { fontSize: '32px', fill: '#000' });
+	healthText.fixedToCamera = true;
+	healthText.cameraOffset.setTo(16, 16);
+
+	// Game state text
+	stateText = game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
+	stateText.fixedToCamera = true;
+	stateText.cameraOffset.setTo(400, 300);
+    stateText.anchor.setTo(0.5, 0.5);
+    stateText.visible = false;
 
 	// Controls
 	cursors = game.input.keyboard.createCursorKeys();
@@ -96,18 +104,26 @@ function create() {
 
 function update() {
 
-	// Collide the player with the tilemap
-	game.physics.arcade.collide(player, layer);
-
 	// Check for collisions
-	game.physics.arcade.overlap(lazers, layer, lazerHitsMap, null, this);
+	game.physics.arcade.overlap(player, platforms, playerHitsMap, null, this);
+	game.physics.arcade.overlap(lazers, platforms, lazerHitsMap, null, this);
+
+	// Player dead?
+	if (player.health < 1)
+	{
+		player.kill();
+
+		stateText.text = 'GAME OVER\nClick to restart';
+		stateText.visible = true;
+
+		// 'click to restart' handler
+		game.input.onTap.addOnce(restart, this);
+	}
 
 	// Reset player acceleration
 	player.body.acceleration.setTo(0, 0);
 
-	// Make the sprite flip on center axis when switching directions.
-	player.anchor.setTo(0.5, 1)
-
+	// Movement left/right
 	if (cursors.left.isDown)
 	{
 		player.body.acceleration.x = -250;
@@ -126,6 +142,7 @@ function update() {
 		player.frame = 0;
 	}
 
+	// Movement up/down
 	if (cursors.up.isDown)
 	{
 		player.body.acceleration.y -= 250;
@@ -140,6 +157,14 @@ function update() {
 	{
 		fireLazer();
 	}
+
+}
+
+function playerHitsMap (player, layer) {
+
+	// Reduce health by 1, update health text
+	player.health -= 1;
+	healthText.text = 'Health: ' + player.health;
 
 }
 
@@ -161,12 +186,24 @@ function fireLazer () {
 		if (lazerBeam)
 		{
 			//  And fire it in the direction that the player is facing
-			lazerBeam.reset(player.x, player.y + 8);
+			lazerBeam.reset(player.x, player.y);
 			lazerBeam.angle = 90 * player.scale.x;
 			lazerBeam.body.velocity.x = 400 * player.scale.x;
 			lazerTime = game.time.now + 200;
 		}
 	}
+}
+
+function restart () {
+
+	// Revive the player
+	player.revive();
+	player.health = 100;
+	healthText.text = 'Health: ' + player.health;
+
+	// Hide state text
+	stateText.visible = false;
+
 }
 
 </script>
