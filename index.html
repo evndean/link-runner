@@ -36,7 +36,9 @@ var platforms;
 var cursors;
 var fireButton;
 var score = 0;
+var batteryDrainTimer;
 var healthText;
+var batteryLevelText;
 var stateText;
 
 function create() {
@@ -60,6 +62,7 @@ function create() {
 	// Create player
 	player = game.add.sprite(100, 100, 'astronaut');
 	player.health = 100;
+	player.batteryLevel = 100;
 
 	// Player physics
 	game.physics.enable(player);
@@ -81,10 +84,18 @@ function create() {
 	lazers.physicsBodyType = Phaser.Physics.ARCADE;
 	lazers.createMultiple(30, 'lazerBeam');
 
-	// Display player health
-	healthText = game.add.text(16, 16, 'Health: ' + player.health, { fontSize: '32px', fill: '#000' });
+	// Create battery drain timer
+	batteryDrainTimer = game.time.create(false);
+	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
+	batteryDrainTimer.start();
+
+	// Display player stats
+	healthText = game.add.text(4, 4, 'Health: ' + player.health, { fontSize: '32px', fill: '#000' });
 	healthText.fixedToCamera = true;
-	healthText.cameraOffset.setTo(16, 16);
+	healthText.cameraOffset.setTo(4, 4);
+	batteryLevelText = game.add.text(4, 36, 'Battery: ' + player.batteryLevel, { fontSize: '32px', fill: '#000' });
+	batteryLevelText.fixedToCamera = true;
+	batteryLevelText.cameraOffset.setTo(4, 36);
 
 	// Game state text
 	stateText = game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
@@ -102,7 +113,17 @@ function create() {
 
 }
 
+function reduceBatteryPower() {
+
+	player.batteryLevel--;
+
+	batteryLevelText.text = 'Battery: ' + player.batteryLevel;
+
+}
+
 function update() {
+
+	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
 
 	// Check for collisions
 	game.physics.arcade.overlap(player, platforms, playerHitsMap, null, this);
