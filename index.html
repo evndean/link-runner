@@ -3,12 +3,12 @@
 <head> 
 	<meta charset="UTF-8" />
 	<title>Link Runner WIP</title>
-    <script src="phaser.min.js"></script>
-    <style type="text/css">
-        body {
-            margin: 0;
-        }
-    </style>
+	<script src="phaser.min.js"></script>
+	<style type="text/css">
+		body {
+			margin: 0;
+		}
+	</style>
 </head>
 <body>
 
@@ -20,28 +20,28 @@ function preload() {
 
 	game.load.tilemap('map', 'assets/opengameart/station-tilemap-test.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('StationTileset', 'assets/opengameart/StationTileset.png');
-
+	game.load.image('background','assets/phaser/tests/debug-grid-1920x1920.png'); // Temporarily using a test background
 	game.load.image('star', 'assets/phaser/star.png');
+	game.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
 	game.load.spritesheet('astronaut', 'assets/opengameart/astronaut3_0.png', 29, 37);
-
-	// from basic follow.js
-	game.load.image('background','assets/phaser/tests/debug-grid-1920x1920.png');
 
 }
 
 var worldWidth = 5000;
 var worldHeight = 1000;
 var player;
+var lazers;
+var lazerTime = 0;
 var map;
 var layer;
 var cursors;
+var fireButton;
 var stars;
 var score = 0;
 var scoreText;
 
 function create() {
 
-	// Enable the Arcade Physics system
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
 	// Add background
@@ -76,6 +76,12 @@ function create() {
 	player.animations.add('left', [1, 2], 10, true);
 	player.animations.add('right', [2, 1], 10, true);
 
+	// LAZERS!
+	lazers = game.add.group();
+	lazers.enableBody = true;
+	lazers.physicsBodyType = Phaser.Physics.ARCADE;
+	lazers.createMultiple(30, 'lazerBeam');
+
 	// Some stars to collect
 	stars = game.add.group();
 
@@ -101,6 +107,7 @@ function create() {
 
 	// Controls
 	cursors = game.input.keyboard.createCursorKeys();
+	fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	// Set the camera to follow the player
 	game.camera.follow(player)
@@ -149,6 +156,12 @@ function update() {
 		player.body.acceleration.y += 250;
 	}
 
+	// Firing?
+	if (fireButton.isDown)
+	{
+		fireLazer();
+	}
+
 }
 
 function collectStar (player, star) {
@@ -160,6 +173,24 @@ function collectStar (player, star) {
 	score += 10;
 	scoreText.text = 'Score: ' + score;
 
+}
+
+function fireLazer () {
+
+	//  To avoid them being allowed to fire too fast we set a time limit
+	if (game.time.now > lazerTime)
+	{
+		//  Grab the first bullet we can from the pool
+		lazerBeam = lazers.getFirstExists(false);
+
+		if (lazerBeam)
+		{
+			//  And fire it in the direction that the player is facing
+			lazerBeam.reset(player.x, player.y + 8);
+			lazerBeam.body.velocity.x = 400 * player.scale.x;
+			lazerTime = game.time.now + 200;
+		}
+	}
 }
 
 </script>
