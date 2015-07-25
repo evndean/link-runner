@@ -120,8 +120,9 @@ function update() {
 	game.physics.arcade.collide(player, layer);
 	game.physics.arcade.collide(stars, layer);
 
-	// Check to see if the player overlaps with a star. If it does, collect the star.
+	// Check for collisions
 	game.physics.arcade.overlap(player, stars, collectStar, null, this);
+	game.physics.arcade.overlap(lazers, layer, lazerHitsMap, null, this);
 
 	// Reset player acceleration
 	player.body.acceleration.setTo(0, 0);
@@ -175,6 +176,13 @@ function collectStar (player, star) {
 
 }
 
+function lazerHitsMap (lazerBeam, layer) {
+
+	// Remove the lazerbeam from the screen
+	lazerBeam.kill();
+
+}
+
 function fireLazer () {
 
 	//  To avoid them being allowed to fire too fast we set a time limit
@@ -187,6 +195,7 @@ function fireLazer () {
 		{
 			//  And fire it in the direction that the player is facing
 			lazerBeam.reset(player.x, player.y + 8);
+			lazerBeam.angle = 90 * player.scale.x;
 			lazerBeam.body.velocity.x = 400 * player.scale.x;
 			lazerTime = game.time.now + 200;
 		}
