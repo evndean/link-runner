@@ -130,9 +130,11 @@ function update() {
 	game.physics.arcade.overlap(lazers, platforms, lazerHitsMap, null, this);
 
 	// Player dead?
-	if (player.health < 1)
+	if (player.health < 1 || player.batteryLevel < 1)
 	{
 		player.kill();
+
+		batteryDrainTimer.stop();
 
 		stateText.text = 'GAME OVER\nClick to restart';
 		stateText.visible = true;
@@ -220,7 +222,15 @@ function restart () {
 	// Revive the player
 	player.revive();
 	player.health = 100;
+	player.batteryLevel = 100;
+
+	// Recreate battery drain timer
+	batteryDrainTimer = game.time.create(false);
+	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
+	batteryDrainTimer.start();
+
 	healthText.text = 'Health: ' + player.health;
+	batteryLevelText.text = 'Battery: ' + player.batteryLevel;
 
 	// Hide state text
 	stateText.visible = false;
