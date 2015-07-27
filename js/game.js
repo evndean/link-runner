@@ -13,6 +13,7 @@ function preload() {
 var worldWidth = 5000;
 var worldHeight = 1000;
 var player;
+var sparkEmitter;
 var lazers;
 var lazerTime = 0;
 var map;
@@ -61,6 +62,20 @@ function create() {
 	player.animations.add('left', [1, 2], 10, true);
 	player.animations.add('right', [2, 1], 10, true);
 	player.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
+
+	// Player spark emitter
+	var bmd = game.add.bitmapData(5, 5);
+	bmd.ctx.beginPath();
+	bmd.ctx.rect(0, 0, 5, 5);
+	bmd.ctx.fillStyle = 'yellow';
+	bmd.ctx.fill();
+	bmd.render();
+	sparkEmitter = game.add.emitter(0, 0, 10);
+	sparkEmitter.makeParticles(bmd);
+	sparkEmitter.minRotation = 0;
+	sparkEmitter.maxRotation = 0;
+	sparkEmitter.gravity = 150;
+	sparkEmitter.bounce.setTo(0.5, 0.5);
 
 	// LAZERS!
 	lazers = game.add.group();
@@ -173,6 +188,15 @@ function playerHitsMap (player, layer) {
 	player.health -= 1;
 	healthText.text = 'Health: ' + player.health;
 
+	// Emit sparks
+	particleBurst();
+
+}
+
+function particleBurst () {
+	sparkEmitter.x = player.x;
+	sparkEmitter.y = player.y;
+	sparkEmitter.start(false, 500, 40, 10)
 }
 
 function lazerHitsMap (lazerBeam, layer) {
