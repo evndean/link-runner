@@ -17,6 +17,9 @@ var lazers;
 var lazerTime = 0;
 var map;
 var platforms;
+var bmd;
+var rechargeZone;
+var rechargeTime = 0;
 var cursors;
 var fireButton;
 var score = 0;
@@ -42,6 +45,15 @@ function create() {
 	platforms = map.createLayer('Platform Layer');
 	platforms.resizeWorld();
 	platforms.debugSettings.forceFullRedraw = true;
+
+	// Add test charging zone
+	bmd = game.add.bitmapData(100, 100);
+	bmd.ctx.beginPath();
+	bmd.ctx.rect(0, 0, 100, 100);
+	bmd.ctx.fillStyle = 'yellow';
+	bmd.ctx.fill();
+	rechargeZone = game.add.sprite(300, 100, bmd);
+	game.physics.enable(rechargeZone);
 
 	// Create player
 	player = game.add.sprite(100, 100, 'astronaut');
@@ -70,7 +82,7 @@ function create() {
 
 	// Create battery drain timer
 	batteryDrainTimer = game.time.create(false);
-	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
+	batteryDrainTimer.loop(1000, reduceBatteryPower, this);
 	batteryDrainTimer.start();
 
 	// Display player stats
@@ -108,10 +120,12 @@ function reduceBatteryPower() {
 function update() {
 
 	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
+	game.debug.text('rechargeTime: ' + rechargeTime, 4, 100);
 
 	// Check for collisions
 	game.physics.arcade.overlap(player, platforms, playerHitsMap, null, this);
 	game.physics.arcade.overlap(lazers, platforms, lazerHitsMap, null, this);
+	game.physics.arcade.overlap(player, rechargeZone, rechargeBattery, null, this);
 
 	// Player dead?
 	if (player.health < 1 || player.batteryLevel < 1)
@@ -180,6 +194,18 @@ function lazerHitsMap (lazerBeam, layer) {
 	// Remove the lazerbeam from the screen
 	lazerBeam.kill();
 
+}
+
+function rechargeBattery () {
+
+	// Don't recharge too quickly; set a time limit
+	if (player.batteryLevel <= 100 && game.time.now > rechargeTime)
+	{
+		// Increase battery level
+		player.batteryLevel++;
+		rechargeTime = game.time.now + 500;
+
+	}
 }
 
 function fireLazer () {
