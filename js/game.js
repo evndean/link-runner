@@ -25,6 +25,9 @@ var healthText;
 var batteryLevelText;
 var stateText;
 
+var $hud = $( "#hud" );
+var hudHTML;
+
 function create() {
 
 	game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -80,6 +83,14 @@ function create() {
 	batteryLevelText = game.add.text(4, 36, 'Battery: ' + player.batteryLevel, { fontSize: '32px', fill: '#000' });
 	batteryLevelText.fixedToCamera = true;
 	batteryLevelText.cameraOffset.setTo(4, 36);
+
+	// Insert text into the HUD
+	hudHTML = "<p>";
+	hudHTML += "Health: " + player.health;
+	hudHTML += "  |  ";
+	hudHTML += "Battery: " + player.batteryLevel;
+	hudHTML += "</p>";
+	$hud.append(hudHTML);
 
 	// Game state text
 	stateText = game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
