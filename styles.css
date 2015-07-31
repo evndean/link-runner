@@ -1,0 +1,23 @@
+body {
+	margin: 0;
+}
+#game-container {
+	width: 800px;
+	margin: 20px auto;
+}
+#game {
+	z-index: 1;
+}
+#hud {
+	position: absolute;
+	top: 20px;
+	z-index: 2; /* place this above the game div */
+	background-color: rgba(200, 200, 200, 0.7);
+	width: 780px;
+	height: 40px;
+	margin: 0px 10px;
+}
+#hud p {
+	text-align: center;
+	margin-top: 5px;
+}
