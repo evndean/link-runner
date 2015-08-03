@@ -1,3 +1,46 @@
+// Create Drone class
+Drone = function(game, x, y) {
+
+	Phaser.Sprite.call(this, game, x, y, 'astronaut');
+
+	this.health = 100;
+	this.batteryLevel = 100;
+
+	// Physics
+	game.physics.enable(this);
+	this.body.allowGravity = false;
+	this.body.collideWorldBounds = true;
+	this.body.velocity.setTo(0, 0);
+	this.body.bounce.setTo(0.3, 0.3);
+	this.body.maxVelocity.set(250);
+	this.body.drag.set(150);
+
+	// Animations
+	this.animations.add('left', [1, 2], 10, true);
+	this.animations.add('right', [2, 1], 10, true);
+	this.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
+
+	this.isDead = function () {
+		if (this.health < 1) {
+			return true;
+		}
+		if (this.batteryLevel < 1) {
+			return true;
+		}
+		return false;
+	}
+
+	this.collide = function () {
+		// Reduce health by 1, update health text
+		this.health = this.health - 1;
+		healthText.text = 'Health: ' + this.health;
+	}
+
+};
+
+Drone.prototype = Object.create(Phaser.Sprite.prototype);
+Drone.prototype.constructor = Drone;
+
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function preload() {
@@ -44,23 +87,8 @@ function create() {
 	platforms.debugSettings.forceFullRedraw = true;
 
 	// Create player
-	player = game.add.sprite(100, 100, 'astronaut');
-	player.health = 100;
-	player.batteryLevel = 100;
-
-	// Player physics
-	game.physics.enable(player);
-	player.body.allowGravity = false;
-	player.body.collideWorldBounds = true;
-	player.body.velocity.setTo(0, 0);
-	player.body.bounce.setTo(0.3, 0.3);
-	player.body.maxVelocity.set(250);
-	player.body.drag.set(150);
-
-	// Player animations
-	player.animations.add('left', [1, 2], 10, true);
-	player.animations.add('right', [2, 1], 10, true);
-	player.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
+	player = new Drone(game, 100, 100);
+	game.add.existing(player);
 
 	// LAZERS!
 	lazers = game.add.group();
@@ -110,11 +138,11 @@ function update() {
 	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
 
 	// Check for collisions
-	game.physics.arcade.overlap(player, platforms, playerHitsMap, null, this);
+	game.physics.arcade.overlap(player, platforms, player.collide, null, this);
 	game.physics.arcade.overlap(lazers, platforms, lazerHitsMap, null, this);
 
 	// Player dead?
-	if (player.health < 1 || player.batteryLevel < 1)
+	if (player.isDead())
 	{
 		player.kill();
 
@@ -167,13 +195,13 @@ function update() {
 
 }
 
-function playerHitsMap (player, layer) {
+// function playerHitsMap (player, layer) {
 
-	// Reduce health by 1, update health text
-	player.health -= 1;
-	healthText.text = 'Health: ' + player.health;
+// 	// Reduce health by 1, update health text
+// 	player.health -= 1;
+// 	healthText.text = 'Health: ' + player.health;
 
-}
+// }
 
 function lazerHitsMap (lazerBeam, layer) {
 
