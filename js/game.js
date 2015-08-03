@@ -21,12 +21,19 @@ var cursors;
 var fireButton;
 var score = 0;
 var batteryDrainTimer;
-var healthText;
-var batteryLevelText;
 var stateText;
 
 var $hud = $( "#hud" );
-var hudHTML;
+
+$hud.update = function () {
+	var hudHTML;
+	hudHTML = "<p>";
+	hudHTML += "Health: " + player.health;
+	hudHTML += "  |  ";
+	hudHTML += "Battery: " + player.batteryLevel;
+	hudHTML += "</p>";
+	this.html(hudHTML);
+}
 
 function create() {
 
@@ -76,22 +83,6 @@ function create() {
 	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
 	batteryDrainTimer.start();
 
-	// Display player stats
-	healthText = game.add.text(4, 4, 'Health: ' + player.health, { fontSize: '32px', fill: '#000' });
-	healthText.fixedToCamera = true;
-	healthText.cameraOffset.setTo(4, 4);
-	batteryLevelText = game.add.text(4, 36, 'Battery: ' + player.batteryLevel, { fontSize: '32px', fill: '#000' });
-	batteryLevelText.fixedToCamera = true;
-	batteryLevelText.cameraOffset.setTo(4, 36);
-
-	// Insert text into the HUD
-	hudHTML = "<p>";
-	hudHTML += "Health: " + player.health;
-	hudHTML += "  |  ";
-	hudHTML += "Battery: " + player.batteryLevel;
-	hudHTML += "</p>";
-	$hud.append(hudHTML);
-
 	// Game state text
 	stateText = game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
 	stateText.fixedToCamera = true;
@@ -104,7 +95,7 @@ function create() {
 	fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	// Set the camera to follow the player
-	game.camera.follow(player)
+	game.camera.follow(player);
 
 }
 
@@ -112,13 +103,13 @@ function reduceBatteryPower() {
 
 	player.batteryLevel--;
 
-	batteryLevelText.text = 'Battery: ' + player.batteryLevel;
-
 }
 
 function update() {
 
-	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
+	$hud.update();
+
+	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 50);
 
 	// Check for collisions
 	game.physics.arcade.overlap(player, platforms, playerHitsMap, null, this);
@@ -182,7 +173,6 @@ function playerHitsMap (player, layer) {
 
 	// Reduce health by 1, update health text
 	player.health -= 1;
-	healthText.text = 'Health: ' + player.health;
 
 }
 
@@ -224,9 +214,6 @@ function restart () {
 	batteryDrainTimer = game.time.create(false);
 	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
 	batteryDrainTimer.start();
-
-	healthText.text = 'Health: ' + player.health;
-	batteryLevelText.text = 'Battery: ' + player.batteryLevel;
 
 	// Hide state text
 	stateText.visible = false;
