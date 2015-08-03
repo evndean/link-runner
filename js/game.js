@@ -20,26 +20,32 @@ Drone = function(game, x, y) {
 	this.animations.add('right', [2, 1], 10, true);
 	this.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
 
-	this.isDead = function () {
-		if (this.health < 1) {
-			return true;
-		}
-		if (this.batteryLevel < 1) {
-			return true;
-		}
-		return false;
-	}
-
-	this.collide = function () {
-		// Reduce health by 1, update health text
-		this.health = this.health - 1;
-		healthText.text = 'Health: ' + this.health;
-	}
-
 };
 
 Drone.prototype = Object.create(Phaser.Sprite.prototype);
 Drone.prototype.constructor = Drone;
+
+Drone.prototype.collide = function () {
+
+	// Reduce health by 1, update health text
+	this.health = this.health - 1;
+	healthText.text = 'Health: ' + this.health;
+
+}
+
+Drone.prototype.isDead = function () {
+
+	if (this.health < 1) {
+		return true;
+	}
+
+	if (this.batteryLevel < 1) {
+		return true;
+	}
+
+	return false;
+
+}
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
@@ -138,7 +144,7 @@ function update() {
 	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
 
 	// Check for collisions
-	game.physics.arcade.overlap(player, platforms, player.collide, null, this);
+	game.physics.arcade.overlap(player, platforms, player.collide, null, player);
 	game.physics.arcade.overlap(lazers, platforms, lazerHitsMap, null, this);
 
 	// Player dead?
