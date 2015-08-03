@@ -17,6 +17,7 @@ var lazers;
 var lazerTime = 0;
 var map;
 var platforms;
+var targets;
 var cursors;
 var fireButton;
 var score = 0;
@@ -39,9 +40,26 @@ function create() {
 	map.addTilesetImage('StationTileset');
 	map.setCollisionBetween(1, 12);  // Station Tilemap tiles
 
-	platforms = map.createLayer('Platform Layer');
+	platforms = map.createLayer('Platforms');
 	platforms.resizeWorld();
 	platforms.debugSettings.forceFullRedraw = true;
+
+	// Add targets group, enable physics
+	targets = game.add.group();
+	targets.enableBody = true;
+	targets.physicsBodyType = Phaser.Physics.ARCADE;
+
+	// Add objects to targets group
+	var bmd = game.add.bitmapData(50, 50);
+	bmd.ctx.beginPath();
+	bmd.ctx.rect(0, 0, 50, 50);
+	bmd.ctx.fillStyle = 'red';
+	bmd.ctx.fill();
+	bmd.render();
+	map.createFromObjects('TargetObjects', 2, bmd, 2, true, false, targets);
+	
+	// Make the targets immovable
+	targets.setAll('body.immovable', true);
 
 	// Create player
 	player = game.add.sprite(100, 100, 'astronaut');
@@ -109,9 +127,13 @@ function update() {
 
 	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
 
+	// Set collisions between targets and player
+	game.physics.arcade.collide(player, targets);
+
 	// Check for collisions
 	game.physics.arcade.overlap(player, platforms, playerHitsMap, null, this);
 	game.physics.arcade.overlap(lazers, platforms, lazerHitsMap, null, this);
+	game.physics.arcade.overlap(lazers, targets, lazerHitsTarget, null, this);
 
 	// Player dead?
 	if (player.health < 1 || player.batteryLevel < 1)
@@ -180,6 +202,15 @@ function lazerHitsMap (lazerBeam, layer) {
 	// Remove the lazerbeam from the screen
 	lazerBeam.kill();
 
+}
+
+function lazerHitsTarget (lazerBeam, target) {
+
+	// Remove the lazerbeam from the screen
+	lazerBeam.kill();
+
+	// Remove the target from the screen
+	target.kill();
 }
 
 function fireLazer () {
