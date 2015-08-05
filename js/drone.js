@@ -19,6 +19,10 @@ Drone = function(game, x, y) {
 	this.animations.add('right', [2, 1], 10, true);
 	this.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
 
+	// Controls
+	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
+	this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
 };
 
 Drone.prototype = Object.create(Phaser.Sprite.prototype);
@@ -43,5 +47,47 @@ Drone.prototype.isDead = function () {
 	}
 
 	return false;
+
+}
+
+Drone.prototype.update = function() {
+
+	// Reset player acceleration
+	this.body.acceleration.setTo(0, 0);
+
+	// Movement left/right
+	if (this.cursors.left.isDown)
+	{
+		this.body.acceleration.x = -250;
+		this.scale.x = -1;
+		this.animations.play('left');
+	}
+	else if (this.cursors.right.isDown)
+	{
+		this.body.acceleration.x = 250;
+		this.scale.x = 1;
+		this.animations.play('right');
+	}
+	else
+	{
+		this.animations.stop();
+		this.frame = 0;
+	}
+
+	// Movement up/down
+	if (this.cursors.up.isDown)
+	{
+		this.body.acceleration.y -= 250;
+	}
+	else if (this.cursors.down.isDown)
+	{
+		this.body.acceleration.y += 250;
+	}
+
+	// Firing?
+	if (this.fireButton.isDown)
+	{
+		fireLazer();
+	}
 
 }

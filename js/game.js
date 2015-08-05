@@ -73,10 +73,6 @@ function create() {
     stateText.anchor.setTo(0.5, 0.5);
     stateText.visible = false;
 
-	// Controls
-	cursors = game.input.keyboard.createCursorKeys();
-	fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
 	// Set the camera to follow the player
 	game.camera.follow(player)
 
@@ -110,44 +106,6 @@ function update() {
 
 		// 'click to restart' handler
 		game.input.onTap.addOnce(restart, this);
-	}
-
-	// Reset player acceleration
-	player.body.acceleration.setTo(0, 0);
-
-	// Movement left/right
-	if (cursors.left.isDown)
-	{
-		player.body.acceleration.x = -250;
-		player.scale.x = -1;
-		player.animations.play('left');
-	}
-	else if (cursors.right.isDown)
-	{
-		player.body.acceleration.x = 250;
-		player.scale.x = 1;
-		player.animations.play('right');
-	}
-	else
-	{
-		player.animations.stop();
-		player.frame = 0;
-	}
-
-	// Movement up/down
-	if (cursors.up.isDown)
-	{
-		player.body.acceleration.y -= 250;
-	}
-	else if (cursors.down.isDown)
-	{
-		player.body.acceleration.y += 250;
-	}
-
-	// Firing?
-	if (fireButton.isDown)
-	{
-		fireLazer();
 	}
 
 }
