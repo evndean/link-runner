@@ -110,14 +110,6 @@ function update() {
 
 }
 
-// function playerHitsMap (player, layer) {
-
-// 	// Reduce health by 1, update health text
-// 	player.health -= 1;
-// 	healthText.text = 'Health: ' + player.health;
-
-// }
-
 function lazerHitsMap (lazerBeam, layer) {
 
 	// Remove the lazerbeam from the screen
