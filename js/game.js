@@ -2,8 +2,11 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 function preload() {
 
-	game.load.tilemap('map', 'assets/opengameart/tilemaps/json/station-tilemap-test.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.image('StationTileset', 'assets/opengameart/tilemaps/tiles/space-station-tileset.png');
+	// game.load.tilemap('map', 'assets/opengameart/tilemaps/json/station-tilemap-test.json', null, Phaser.Tilemap.TILED_JSON);
+	game.load.tilemap('map-01', 'assets/opengameart/tilemaps/json/map-01.json', null, Phaser.Tilemap.TILED_JSON);
+	// game.load.image('StationTileset', 'assets/opengameart/tilemaps/tiles/space-station-tileset.png');
+	game.load.image('station-32', 'assets/opengameart/tilemaps/tiles/space-station-tileset-32.png');
+	game.load.image('dirt', 'assets/opengameart/tilemaps/tiles/dirt-platformer-tiles.png');
 	game.load.image('background','assets/phaser/tests/debug-grid-1920x1920.png'); // Temporarily using a test background
 	game.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
 	game.load.spritesheet('astronaut', 'assets/opengameart/astronaut3_0.png', 29, 37);
@@ -16,6 +19,7 @@ var player;
 var lazers;
 var lazerTime = 0;
 var map;
+var background;
 var platforms;
 var cursors;
 var fireButton;
@@ -29,17 +33,19 @@ function create() {
 
 	game.physics.startSystem(Phaser.Physics.ARCADE);
 
-	// Add background
-	game.add.tileSprite(0, 0, worldWidth, worldHeight, 'background');
-
 	game.world.setBounds(0, 0, worldWidth, worldHeight);
 
 	// Add tilemap
-	map = game.add.tilemap('map');
-	map.addTilesetImage('StationTileset');
-	map.setCollisionBetween(1, 12);  // Station Tilemap tiles
+	map = game.add.tilemap('map-01');
+	map.addTilesetImage('dirt');
+	map.addTilesetImage('station-32');
+	map.setCollisionBetween(25, 36);  // station-32 tiles
 
-	platforms = map.createLayer('Platform Layer');
+	background = map.createLayer('background');
+	background.resizeWorld();
+	background.debugSettings.forceFullRedraw = true;
+
+	platforms = map.createLayer('collision');
 	platforms.resizeWorld();
 	platforms.debugSettings.forceFullRedraw = true;
 
