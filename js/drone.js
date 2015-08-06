@@ -1,6 +1,6 @@
 Drone = function(game, x, y) {
 
-	Phaser.Sprite.call(this, game, x, y, 'astronaut');
+	Phaser.Sprite.call(this, game, x, y, 'drone');
 
 	this.health = 100;
 	this.batteryLevel = 100;
@@ -15,8 +15,7 @@ Drone = function(game, x, y) {
 	this.body.drag.set(150);
 
 	// Animations
-	this.animations.add('left', [1, 2], 10, true);
-	this.animations.add('right', [2, 1], 10, true);
+	this.animations.add('fly', null, 10, true);
 	this.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
 
 	// Controls
@@ -56,31 +55,25 @@ Drone.prototype.update = function() {
 	// Reset player acceleration
 	this.body.acceleration.setTo(0, 0);
 
+	// Play animation
+	this.animations.play('fly');
+
 	// Movement left/right
 	if (this.cursors.left.isDown)
 	{
 		this.body.acceleration.x = -250;
 		this.scale.x = -1;
-		this.animations.play('left');
 	}
-	else if (this.cursors.right.isDown)
+	if (this.cursors.right.isDown)
 	{
 		this.body.acceleration.x = 250;
 		this.scale.x = 1;
-		this.animations.play('right');
 	}
-	else
-	{
-		this.animations.stop();
-		this.frame = 0;
-	}
-
-	// Movement up/down
 	if (this.cursors.up.isDown)
 	{
 		this.body.acceleration.y -= 250;
 	}
-	else if (this.cursors.down.isDown)
+	if (this.cursors.down.isDown)
 	{
 		this.body.acceleration.y += 250;
 	}

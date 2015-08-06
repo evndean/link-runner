@@ -6,7 +6,7 @@ function preload() {
 	game.load.image('StationTileset', 'assets/opengameart/StationTileset.png');
 	game.load.image('background','assets/phaser/tests/debug-grid-1920x1920.png'); // Temporarily using a test background
 	game.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
-	game.load.spritesheet('astronaut', 'assets/opengameart/astronaut3_0.png', 29, 37);
+	game.load.spritesheet('drone', 'assets/spritesheets/drone.png', 32, 8);
 
 }
 
