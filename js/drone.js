@@ -23,7 +23,7 @@ Drone = function(game, x, y) {
 	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
 	this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-};
+}
 
 Drone.prototype = Object.create(Phaser.Sprite.prototype);
 Drone.prototype.constructor = Drone;
