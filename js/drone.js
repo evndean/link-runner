@@ -50,6 +50,7 @@ Drone.prototype.isDead = function () {
 
 }
 
+// Automatically called by World.update
 Drone.prototype.update = function() {
 
 	// Reset player acceleration
