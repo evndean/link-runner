@@ -15,7 +15,7 @@ Drone = function(game, x, y) {
 	this.body.drag.set(150);
 
 	// Animations
-	this.animations.add('fly', null, 10, true);
+	this.animations.add('fly', null, 25, true);
 	this.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
 
 	// Controls
