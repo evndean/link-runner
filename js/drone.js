@@ -16,7 +16,7 @@ Drone = function(game, x, y) {
 
 	// Animations
 	this.animations.add('fly', null, 25, true);
-	this.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
+	this.anchor.setTo(0.5, 0.5)  // Sprite flips on center axis when switching directions.
 
 	// Controls
 	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
@@ -63,12 +63,33 @@ Drone.prototype.update = function() {
 	{
 		this.body.acceleration.x = -250;
 		this.scale.x = -1;
+		if (this.angle > -14)
+		{
+			this.angle--;
+		}
 	}
-	if (this.cursors.right.isDown)
+	else if (this.cursors.right.isDown)
 	{
 		this.body.acceleration.x = 250;
 		this.scale.x = 1;
+		if (this.angle < 14)
+		{
+			this.angle++;
+		}
 	}
+	else
+	{
+		if (this.angle > 0)
+		{
+			this.angle--;
+		}
+		if (this.angle < 0)
+		{
+			this.angle++;
+		}
+	}
+
+	// Movement up/down
 	if (this.cursors.up.isDown)
 	{
 		this.body.acceleration.y -= 250;
