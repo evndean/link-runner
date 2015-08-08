@@ -3,9 +3,8 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 function preload() {
 
 	game.load.tilemap('map-01', 'assets/opengameart/tilemaps/json/map-01.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.image('station-32', 'assets/opengameart/tilemaps/tiles/space-station-tileset-32.png');
 	game.load.image('dirt', 'assets/opengameart/tilemaps/tiles/dirt-platformer-tiles.png');
-	game.load.image('background','assets/phaser/tests/debug-grid-1920x1920.png'); // Temporarily using a test background
+	game.load.image('station-32', 'assets/opengameart/tilemaps/tiles/space-station-tileset-32.png');
 	game.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
 	game.load.spritesheet('drone', 'assets/spritesheets/drone.png', 64, 26);
 
@@ -17,9 +16,6 @@ var lazerTime = 0;
 var map;
 var background;
 var pipeWalls;
-var cursors;
-var fireButton;
-var score = 0;
 var batteryDrainTimer;
 var healthText;
 var batteryLevelText;
@@ -48,7 +44,7 @@ function create() {
 	// pipeWalls.debugSettings.forceFullRedraw = true;
 
 	// Create player
-	player = new Drone(game, 100, 100);
+	player = new Drone(game, 2514, 96);
 	game.add.existing(player);
 
 	// LAZERS!
@@ -91,9 +87,6 @@ function reduceBatteryPower() {
 }
 
 function update() {
-
-	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
-	game.debug.bodyInfo(player, 32, 320);
 
 	// Check for collisions
 	game.physics.arcade.overlap(player, pipeWalls, player.collide, null, player);

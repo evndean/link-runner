@@ -65,6 +65,7 @@ Drone.prototype.update = function() {
 		this.scale.x = -1;
 		if (this.angle > -14)
 		{
+			// Rotate sprite to the left
 			this.angle--;
 		}
 	}
@@ -74,6 +75,7 @@ Drone.prototype.update = function() {
 		this.scale.x = 1;
 		if (this.angle < 14)
 		{
+			// Rotate sprite to the right
 			this.angle++;
 		}
 	}
