@@ -2,9 +2,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 
 function preload() {
 
-	// game.load.tilemap('map', 'assets/opengameart/tilemaps/json/station-tilemap-test.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.tilemap('map-01', 'assets/opengameart/tilemaps/json/map-01.json', null, Phaser.Tilemap.TILED_JSON);
-	// game.load.image('StationTileset', 'assets/opengameart/tilemaps/tiles/space-station-tileset.png');
 	game.load.image('station-32', 'assets/opengameart/tilemaps/tiles/space-station-tileset-32.png');
 	game.load.image('dirt', 'assets/opengameart/tilemaps/tiles/dirt-platformer-tiles.png');
 	game.load.image('background','assets/phaser/tests/debug-grid-1920x1920.png'); // Temporarily using a test background
@@ -20,7 +18,7 @@ var lazers;
 var lazerTime = 0;
 var map;
 var background;
-var platforms;
+var pipeWalls;
 var cursors;
 var fireButton;
 var score = 0;
@@ -39,15 +37,19 @@ function create() {
 	map = game.add.tilemap('map-01');
 	map.addTilesetImage('dirt');
 	map.addTilesetImage('station-32');
-	map.setCollisionBetween(25, 36);  // station-32 tiles
 
+	// Add layers
 	background = map.createLayer('background');
-	background.resizeWorld();
-	background.debugSettings.forceFullRedraw = true;
+	pipeWalls = map.createLayer('pipe-walls');
 
-	platforms = map.createLayer('collision');
-	platforms.resizeWorld();
-	platforms.debugSettings.forceFullRedraw = true;
+	// Enable collisions on the pipeWalls layer
+	map.setCollisionBetween(25, 36, true, pipeWalls);  // station-32 tiles
+
+	background.resizeWorld();
+
+	// background.debugSettings.forceFullRedraw = true;
+	// pipeWalls.resizeWorld();
+	// pipeWalls.debugSettings.forceFullRedraw = true;
 
 	// Create player
 	player = new Drone(game, 100, 100);
@@ -95,10 +97,11 @@ function reduceBatteryPower() {
 function update() {
 
 	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
+	game.debug.bodyInfo(player, 32, 320);
 
 	// Check for collisions
-	game.physics.arcade.overlap(player, platforms, player.collide, null, player);
-	game.physics.arcade.overlap(lazers, platforms, lazerHitsMap, null, this);
+	game.physics.arcade.overlap(player, pipeWalls, player.collide, null, player);
+	game.physics.arcade.overlap(lazers, pipeWalls, lazerHitsMap, null, this);
 
 	// Player dead?
 	if (player.isDead())
