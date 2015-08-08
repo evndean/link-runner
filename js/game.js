@@ -9,7 +9,7 @@ function preload() {
 	game.load.image('dirt', 'assets/opengameart/tilemaps/tiles/dirt-platformer-tiles.png');
 	game.load.image('background','assets/phaser/tests/debug-grid-1920x1920.png'); // Temporarily using a test background
 	game.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
-	game.load.spritesheet('astronaut', 'assets/opengameart/astronaut3_0.png', 29, 37);
+	game.load.spritesheet('drone', 'assets/spritesheets/drone.png', 64, 26);
 
 }
 
@@ -50,23 +50,8 @@ function create() {
 	platforms.debugSettings.forceFullRedraw = true;
 
 	// Create player
-	player = game.add.sprite(100, 100, 'astronaut');
-	player.health = 100;
-	player.batteryLevel = 100;
-
-	// Player physics
-	game.physics.enable(player);
-	player.body.allowGravity = false;
-	player.body.collideWorldBounds = true;
-	player.body.velocity.setTo(0, 0);
-	player.body.bounce.setTo(0.3, 0.3);
-	player.body.maxVelocity.set(250);
-	player.body.drag.set(150);
-
-	// Player animations
-	player.animations.add('left', [1, 2], 10, true);
-	player.animations.add('right', [2, 1], 10, true);
-	player.anchor.setTo(0.5, 1)  // Sprite flips on center axis when switching directions.
+	player = new Drone(game, 100, 100);
+	game.add.existing(player);
 
 	// LAZERS!
 	lazers = game.add.group();
@@ -94,10 +79,6 @@ function create() {
     stateText.anchor.setTo(0.5, 0.5);
     stateText.visible = false;
 
-	// Controls
-	cursors = game.input.keyboard.createCursorKeys();
-	fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
 	// Set the camera to follow the player
 	game.camera.follow(player)
 
@@ -116,11 +97,11 @@ function update() {
 	game.debug.text('Time until battery drain: ' + batteryDrainTimer.duration.toFixed(0), 4, 80);
 
 	// Check for collisions
-	game.physics.arcade.overlap(player, platforms, playerHitsMap, null, this);
+	game.physics.arcade.overlap(player, platforms, player.collide, null, player);
 	game.physics.arcade.overlap(lazers, platforms, lazerHitsMap, null, this);
 
 	// Player dead?
-	if (player.health < 1 || player.batteryLevel < 1)
+	if (player.isDead())
 	{
 		player.kill();
 
@@ -132,52 +113,6 @@ function update() {
 		// 'click to restart' handler
 		game.input.onTap.addOnce(restart, this);
 	}
-
-	// Reset player acceleration
-	player.body.acceleration.setTo(0, 0);
-
-	// Movement left/right
-	if (cursors.left.isDown)
-	{
-		player.body.acceleration.x = -250;
-		player.scale.x = -1;
-		player.animations.play('left');
-	}
-	else if (cursors.right.isDown)
-	{
-		player.body.acceleration.x = 250;
-		player.scale.x = 1;
-		player.animations.play('right');
-	}
-	else
-	{
-		player.animations.stop();
-		player.frame = 0;
-	}
-
-	// Movement up/down
-	if (cursors.up.isDown)
-	{
-		player.body.acceleration.y -= 250;
-	}
-	else if (cursors.down.isDown)
-	{
-		player.body.acceleration.y += 250;
-	}
-
-	// Firing?
-	if (fireButton.isDown)
-	{
-		fireLazer();
-	}
-
-}
-
-function playerHitsMap (player, layer) {
-
-	// Reduce health by 1, update health text
-	player.health -= 1;
-	healthText.text = 'Health: ' + player.health;
 
 }
 
