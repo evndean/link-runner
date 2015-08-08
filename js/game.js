@@ -11,8 +11,6 @@ function preload() {
 
 }
 
-var worldWidth = 5000;
-var worldHeight = 1000;
 var player;
 var lazers;
 var lazerTime = 0;
@@ -30,8 +28,6 @@ var stateText;
 function create() {
 
 	game.physics.startSystem(Phaser.Physics.ARCADE);
-
-	game.world.setBounds(0, 0, worldWidth, worldHeight);
 
 	// Add tilemap
 	map = game.add.tilemap('map-01');
