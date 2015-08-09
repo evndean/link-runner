@@ -1,6 +1,23 @@
 var LinkRunner = LinkRunner || {};
 
-LinkRunner.Game = function(game) {};
+LinkRunner.Game = function(game) {
+
+	this.map = null;
+
+	this.background = null;
+	this.pipeWalls = null;
+
+	this.player = null;
+
+	this.weapons = [];
+
+	this.batteryDrainTimer = null;
+
+	this.stateText = null;
+
+	this.$hud = null;
+
+};
 
 LinkRunner.Game.prototype.create = function() {
 
@@ -50,7 +67,7 @@ LinkRunner.Game.prototype.update = function() {
 
 	// Check for collisions
 	this.game.physics.arcade.overlap(this.player, this.pipeWalls, this.player.collide, null, this.player);
-	this.game.physics.arcade.overlap(this.player.lazers, this.pipeWalls, this.player.lazerHitsMap, null, this.player);
+	this.game.physics.arcade.overlap(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
 
 	// Player dead?
 	if (this.player.isDead())

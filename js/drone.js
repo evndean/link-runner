@@ -1,4 +1,4 @@
-Drone = function(game, x, y) {
+var Drone = function(game, x, y) {
 
 	Phaser.Sprite.call(this, game, x, y, 'drone');
 
@@ -19,14 +19,8 @@ Drone = function(game, x, y) {
 	this.animations.play('fly');
 	this.anchor.setTo(0.5, 0.5)  // Sprite flips on center axis when switching directions.
 
-	// LAZERS!
-	this.lazers = game.add.group();
-	this.lazers.enableBody = true;
-	this.lazers.physicsBodyType = Phaser.Physics.ARCADE;
-	this.lazers.createMultiple(30, 'lazerBeam');
-
-	// Initialize timer for lazers
-	this.lazerTime = 0;
+	// Weapon
+	this.weapon = new Weapon.Beam(this.game);
 
 	// Controls
 	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
@@ -89,7 +83,7 @@ Drone.prototype.update = function() {
 	// Firing?
 	if (this.fireButton.isDown)
 	{
-		this.fireLazer();
+		this.weapon.fire(this);
 	}
 
 }
@@ -103,43 +97,16 @@ Drone.prototype.collide = function () {
 
 Drone.prototype.isDead = function () {
 
-	if (this.health < 1) {
+	if (this.health < 1)
+	{
 		return true;
 	}
 
-	if (this.batteryLevel < 1) {
+	if (this.batteryLevel < 1)
+	{
 		return true;
 	}
 
 	return false;
-
-}
-
-Drone.prototype.fireLazer = function() {
-
-	//  To avoid them being allowed to fire too fast we set a time limit
-	if (this.game.time.now > this.lazerTime) {
-
-		//  Grab the first bullet we can from the pool
-		this.lazerBeam = this.lazers.getFirstExists(false);
-
-		if (this.lazerBeam) {
-
-			//  And fire it in the direction that the player is facing
-			this.lazerBeam.reset(this.body.x, this.body.y);
-			this.lazerBeam.angle = 90 * this.scale.x;
-			this.lazerBeam.body.velocity.x = 400 * this.scale.x;
-			this.lazerTime = this.game.time.now + 200;
-
-		}
-
-	}
-
-}
-
-Drone.prototype.lazerHitsMap = function() {
-
-	// Remove the lazerbeam from the screen
-	this.lazerBeam.kill();
 
 }
