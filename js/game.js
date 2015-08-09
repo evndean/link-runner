@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
 function preload() {
 
@@ -17,9 +17,19 @@ var map;
 var background;
 var pipeWalls;
 var batteryDrainTimer;
-var healthText;
-var batteryLevelText;
 var stateText;
+
+var $hud = $( "#hud" );
+
+$hud.update = function () {
+	var hudHTML;
+	hudHTML = "<p>";
+	hudHTML += "Health: " + player.health;
+	hudHTML += "  |  ";
+	hudHTML += "Battery: " + player.batteryLevel;
+	hudHTML += "</p>";
+	this.html(hudHTML);
+}
 
 function create() {
 
@@ -58,14 +68,6 @@ function create() {
 	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
 	batteryDrainTimer.start();
 
-	// Display player stats
-	healthText = game.add.text(4, 4, 'Health: ' + player.health, { fontSize: '32px', fill: '#000' });
-	healthText.fixedToCamera = true;
-	healthText.cameraOffset.setTo(4, 4);
-	batteryLevelText = game.add.text(4, 36, 'Battery: ' + player.batteryLevel, { fontSize: '32px', fill: '#000' });
-	batteryLevelText.fixedToCamera = true;
-	batteryLevelText.cameraOffset.setTo(4, 36);
-
 	// Game state text
 	stateText = game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
 	stateText.fixedToCamera = true;
@@ -74,7 +76,7 @@ function create() {
     stateText.visible = false;
 
 	// Set the camera to follow the player
-	game.camera.follow(player)
+	game.camera.follow(player);
 
 }
 
@@ -82,11 +84,11 @@ function reduceBatteryPower() {
 
 	player.batteryLevel--;
 
-	batteryLevelText.text = 'Battery: ' + player.batteryLevel;
-
 }
 
 function update() {
+
+	$hud.update();
 
 	// Check for collisions
 	game.physics.arcade.overlap(player, pipeWalls, player.collide, null, player);
@@ -146,9 +148,6 @@ function restart () {
 	batteryDrainTimer = game.time.create(false);
 	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
 	batteryDrainTimer.start();
-
-	healthText.text = 'Health: ' + player.health;
-	batteryLevelText.text = 'Battery: ' + player.batteryLevel;
 
 	// Hide state text
 	stateText.visible = false;
