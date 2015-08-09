@@ -5,7 +5,6 @@
 * city_backgrounds - http://opengameart.org/content/city-background-repetitive-3
 * parallax-industrial-pack - http://opengameart.org/content/industrial-parallax-background
 * Tilemaps
-  * astronaut3_0.png - http://opengameart.org/content/astronaut-0
   * city_0.png - http://opengameart.org/content/city-background-repetitive
   * city_2.png - http://opengameart.org/content/city-background-repetitive-2
   * Tiles
