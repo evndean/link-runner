@@ -1,155 +1,107 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+var LinkRunner = LinkRunner || {};
 
-function preload() {
+LinkRunner.Game = function(game) {};
 
-	game.load.tilemap('map-01', 'assets/opengameart/tilemaps/json/map-01.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.image('dirt', 'assets/opengameart/tilemaps/tiles/dirt-platformer-tiles.png');
-	game.load.image('pipe-walls', 'assets/opengameart/tilemaps/tiles/pipe-walls.png');
-	game.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
-	game.load.spritesheet('drone', 'assets/spritesheets/drone.png', 64, 26);
+LinkRunner.Game.prototype = {
 
-}
+	create: function() {
 
-var player;
-var lazers;
-var lazerTime = 0;
-var map;
-var background;
-var pipeWalls;
-var batteryDrainTimer;
-var stateText;
+		// Add tilemap
+		this.map = this.game.add.tilemap('map-01');
+		this.map.addTilesetImage('dirt');
+		this.map.addTilesetImage('pipe-walls');
 
-var $hud = $( "#hud" );
+		// Add layers
+		this.background = this.map.createLayer('background');
+		this.pipeWalls = this.map.createLayer('pipe-walls');
 
-$hud.update = function () {
-	var hudHTML;
-	hudHTML = "<p>";
-	hudHTML += "Health: " + player.health;
-	hudHTML += "  |  ";
-	hudHTML += "Battery: " + player.batteryLevel;
-	hudHTML += "</p>";
-	this.html(hudHTML);
-}
+		// Enable collisions on the pipeWalls layer
+		this.map.setCollision(27, true, this.pipeWalls);  // pipe wall
 
-function create() {
+		this.background.resizeWorld();
 
-	game.physics.startSystem(Phaser.Physics.ARCADE);
+		// Create player
+		this.player = new Drone(this.game, 2514, 96);
+		this.game.add.existing(this.player);
 
-	// Add tilemap
-	map = game.add.tilemap('map-01');
-	map.addTilesetImage('dirt');
-	map.addTilesetImage('pipe-walls');
+		// Create battery drain timer
+		this.batteryDrainTimer = this.game.time.create(false);
+		this.batteryDrainTimer.loop(5000, this.reduceBatteryPower, this);
+		this.batteryDrainTimer.start();
 
-	// Add layers
-	background = map.createLayer('background');
-	pipeWalls = map.createLayer('pipe-walls');
+		// Game state text
+		this.stateText = this.game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
+		this.stateText.fixedToCamera = true;
+		this.stateText.cameraOffset.setTo(400, 300);
+	    this.stateText.anchor.setTo(0.5, 0.5);
+	    this.stateText.visible = false;
 
-	// Enable collisions on the pipeWalls layer
-	map.setCollision(27, true, pipeWalls);  // pipe wall
+		// Set the camera to follow the player
+		this.game.camera.follow(this.player);
 
-	background.resizeWorld();
+		// Create HUD
+		this.$hud = $( "#hud" );
 
-	// background.debugSettings.forceFullRedraw = true;
-	// pipeWalls.resizeWorld();
-	// pipeWalls.debugSettings.forceFullRedraw = true;
-
-	// Create player
-	player = new Drone(game, 2514, 96);
-	game.add.existing(player);
-
-	// LAZERS!
-	lazers = game.add.group();
-	lazers.enableBody = true;
-	lazers.physicsBodyType = Phaser.Physics.ARCADE;
-	lazers.createMultiple(30, 'lazerBeam');
-
-	// Create battery drain timer
-	batteryDrainTimer = game.time.create(false);
-	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
-	batteryDrainTimer.start();
-
-	// Game state text
-	stateText = game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
-	stateText.fixedToCamera = true;
-	stateText.cameraOffset.setTo(400, 300);
-    stateText.anchor.setTo(0.5, 0.5);
-    stateText.visible = false;
-
-	// Set the camera to follow the player
-	game.camera.follow(player);
-
-}
-
-function reduceBatteryPower() {
-
-	player.batteryLevel--;
-
-}
-
-function update() {
-
-	$hud.update();
-
-	// Check for collisions
-	game.physics.arcade.overlap(player, pipeWalls, player.collide, null, player);
-	game.physics.arcade.overlap(lazers, pipeWalls, lazerHitsMap, null, this);
-
-	// Player dead?
-	if (player.isDead())
-	{
-		player.kill();
-
-		batteryDrainTimer.stop();
-
-		stateText.text = 'GAME OVER\nClick to restart';
-		stateText.visible = true;
-
-		// 'click to restart' handler
-		game.input.onTap.addOnce(restart, this);
-	}
-
-}
-
-function lazerHitsMap (lazerBeam, layer) {
-
-	// Remove the lazerbeam from the screen
-	lazerBeam.kill();
-
-}
-
-function fireLazer () {
-
-	//  To avoid them being allowed to fire too fast we set a time limit
-	if (game.time.now > lazerTime)
-	{
-		//  Grab the first bullet we can from the pool
-		lazerBeam = lazers.getFirstExists(false);
-
-		if (lazerBeam)
-		{
-			//  And fire it in the direction that the player is facing
-			lazerBeam.reset(player.x, player.y);
-			lazerBeam.angle = 90 * player.scale.x;
-			lazerBeam.body.velocity.x = 400 * player.scale.x;
-			lazerTime = game.time.now + 200;
+		this.$hud.update = function (player) {
+			var hudHTML;
+			hudHTML = "<p>";
+			hudHTML += "Health: " + player.health;
+			hudHTML += "  |  ";
+			hudHTML += "Battery: " + player.batteryLevel;
+			hudHTML += "</p>";
+			this.html(hudHTML);
 		}
-	}
-}
 
-function restart () {
 
-	// Revive the player
-	player.revive();
-	player.body.velocity.setTo(0, 0);
-	player.health = 100;
-	player.batteryLevel = 100;
+	},
 
-	// Recreate battery drain timer
-	batteryDrainTimer = game.time.create(false);
-	batteryDrainTimer.loop(5000, reduceBatteryPower, this);
-	batteryDrainTimer.start();
+	update: function() {
 
-	// Hide state text
-	stateText.visible = false;
+		// Update the HUD
+		this.$hud.update(this.player);
+
+		// Check for collisions
+		this.game.physics.arcade.overlap(this.player, this.pipeWalls, this.player.collide, null, this.player);
+		this.game.physics.arcade.overlap(this.player.lazers, this.pipeWalls, this.player.lazerHitsMap, null, this.player);
+
+		// Player dead?
+		if (this.player.isDead())
+		{
+			this.player.kill();
+
+			this.batteryDrainTimer.stop();
+
+			this.stateText.text = 'GAME OVER\nClick to restart';
+			this.stateText.visible = true;
+
+			// 'click to restart' handler
+			this.game.input.onTap.addOnce(restart, this);
+		}
+
+	},
+
+	reduceBatteryPower: function() {
+
+		this.player.batteryLevel--;
+
+	},
+
+	restart: function() {
+
+		// Revive the player
+		this.player.revive();
+		this.player.body.velocity.setTo(0, 0);
+		this.player.health = 100;
+		this.player.batteryLevel = 100;
+
+		// Recreate battery drain timer
+		this.batteryDrainTimer = this.game.time.create(false);
+		this.batteryDrainTimer.loop(5000, this.reduceBatteryPower, this);
+		this.batteryDrainTimer.start();
+
+		// Hide state text
+		this.stateText.visible = false;
+
+	},
 
 }
