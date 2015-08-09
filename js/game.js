@@ -4,7 +4,7 @@ function preload() {
 
 	game.load.tilemap('map-01', 'assets/opengameart/tilemaps/json/map-01.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('dirt', 'assets/opengameart/tilemaps/tiles/dirt-platformer-tiles.png');
-	game.load.image('station-32', 'assets/opengameart/tilemaps/tiles/space-station-tileset-32.png');
+	game.load.image('pipe-walls', 'assets/opengameart/tilemaps/tiles/pipe-walls.png');
 	game.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
 	game.load.spritesheet('drone', 'assets/spritesheets/drone.png', 64, 26);
 
@@ -28,14 +28,14 @@ function create() {
 	// Add tilemap
 	map = game.add.tilemap('map-01');
 	map.addTilesetImage('dirt');
-	map.addTilesetImage('station-32');
+	map.addTilesetImage('pipe-walls');
 
 	// Add layers
 	background = map.createLayer('background');
 	pipeWalls = map.createLayer('pipe-walls');
 
 	// Enable collisions on the pipeWalls layer
-	map.setCollisionBetween(25, 36, true, pipeWalls);  // station-32 tiles
+	map.setCollision(27, true, pipeWalls);  // pipe wall
 
 	background.resizeWorld();
 
