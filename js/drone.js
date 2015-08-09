@@ -31,7 +31,6 @@ Drone.prototype.collide = function () {
 
 	// Reduce health by 1, update health text
 	this.health = this.health - 1;
-	healthText.text = 'Health: ' + this.health;
 
 }
 
