@@ -15,7 +15,7 @@ LinkRunner.Load.prototype.preload = function () {
 
 LinkRunner.Load.prototype.create = function () {
 
-	// Call the game state
-	this.game.state.start('Game');
+	// Call the splash state
+	this.game.state.start('Splash');
 
 }
