@@ -8,7 +8,7 @@ LinkRunner.game.state.add('Load', LinkRunner.Load);
 LinkRunner.game.state.add('Splash', LinkRunner.Splash);
 LinkRunner.game.state.add('Instructions', LinkRunner.Instructions);
 LinkRunner.game.state.add('Game', LinkRunner.Game);
-// LinkRunner.game.state.add('Win', LinkRunner.Win);
+LinkRunner.game.state.add('Win', LinkRunner.Win);
 
 // Start the game by calling the boot state
 LinkRunner.game.state.start('Boot');
