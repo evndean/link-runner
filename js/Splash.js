@@ -20,6 +20,6 @@ LinkRunner.Splash.prototype.create = function() {
 
 LinkRunner.Splash.prototype.start = function() {
 
-	this.game.state.start('Game');
+	this.game.state.start('Instructions');
 
 };
