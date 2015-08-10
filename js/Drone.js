@@ -1,4 +1,4 @@
-Drone = function(game, x, y) {
+var Drone = function(game, x, y) {
 
 	Phaser.Sprite.call(this, game, x, y, 'drone');
 
@@ -16,7 +16,11 @@ Drone = function(game, x, y) {
 
 	// Animations
 	this.animations.add('fly', null, 25, true);
+	this.animations.play('fly');
 	this.anchor.setTo(0.5, 0.5)  // Sprite flips on center axis when switching directions.
+
+	// Weapon
+	this.weapon = new Weapon.Beam(this.game);
 
 	// Controls
 	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
@@ -27,35 +31,11 @@ Drone = function(game, x, y) {
 Drone.prototype = Object.create(Phaser.Sprite.prototype);
 Drone.prototype.constructor = Drone;
 
-Drone.prototype.collide = function () {
-
-	// Reduce health by 1, update health text
-	this.health = this.health - 1;
-
-}
-
-Drone.prototype.isDead = function () {
-
-	if (this.health < 1) {
-		return true;
-	}
-
-	if (this.batteryLevel < 1) {
-		return true;
-	}
-
-	return false;
-
-}
-
-// Automatically called by World.update
+// Update loop (utomatically called by World.update)
 Drone.prototype.update = function() {
 
-	// Reset player acceleration
+	// Reset acceleration
 	this.body.acceleration.setTo(0, 0);
-
-	// Play animation
-	this.animations.play('fly');
 
 	// Movement left/right
 	if (this.cursors.left.isDown)
@@ -103,7 +83,30 @@ Drone.prototype.update = function() {
 	// Firing?
 	if (this.fireButton.isDown)
 	{
-		fireLazer();
+		this.weapon.fire(this);
 	}
+
+}
+
+Drone.prototype.collide = function () {
+
+	// Reduce health by 1, update health text
+	this.health = this.health - 1;
+
+}
+
+Drone.prototype.isDead = function () {
+
+	if (this.health < 1)
+	{
+		return true;
+	}
+
+	if (this.batteryLevel < 1)
+	{
+		return true;
+	}
+
+	return false;
 
 }

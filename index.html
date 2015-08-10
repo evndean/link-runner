@@ -4,15 +4,23 @@
 	<meta charset="UTF-8" />
 	<title>Link Runner WIP</title>
 	<link rel="stylesheet" type="text/css" href="styles.css" />
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="js/phaser.min.js"></script>
+	<!-- game states -->
+	<script src="js/Boot.js"></script>
+	<script src="js/Load.js"></script>
+	<script src="js/Game.js"></script>
+	<!-- prototypes -->
+	<script src="js/Bullet.js"></script>
+	<script src="js/Weapon.js"></script>
+	<script src="js/Drone.js"></script>
 </head>
 <body>
 	<div id="game-container">
 		<div id="game"></div>
 		<div id="hud"></div>
 	</div>
-	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-	<script src="js/phaser.min.js"></script>
-	<script src="js/drone.js"></script>
-	<script src="js/game.js"></script>
+		<!-- include the main game file -->
+		<script src="js/Main.js"></script>	
 </body>
 </html>
