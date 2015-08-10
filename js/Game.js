@@ -29,9 +29,13 @@ LinkRunner.Game.prototype.create = function() {
 	// Add tile layers
 	this.background = this.map.createLayer('background');
 	this.pipeWalls = this.map.createLayer('pipe-walls');
+	this.winZone = this.map.createLayer('win-zone');
 
 	// Enable collisions on the pipeWalls layer
 	this.map.setCollision(27, true, this.pipeWalls);  // pipe wall
+
+	// Enable collision with the winZone layer
+	this.map.setCollision(12, true, this.winZone); // blue tiles
 
 	// Resize the world
 	this.background.resizeWorld();
@@ -68,6 +72,7 @@ LinkRunner.Game.prototype.update = function() {
 	// Check for collisions
 	this.game.physics.arcade.overlap(this.player, this.pipeWalls, this.player.collide, null, this.player);
 	this.game.physics.arcade.overlap(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
+	this.game.physics.arcade.overlap(this.player, this.winZone, this.winGame, null, this);
 
 	// Player dead?
 	if (this.player.isDead())
@@ -86,6 +91,7 @@ LinkRunner.Game.prototype.update = function() {
 }
 
 LinkRunner.Game.prototype.hudUpdate = function() {
+
 	var hudHTML;
 	hudHTML = "<p>";
 	hudHTML += "Health: " + this.player.health;
@@ -93,6 +99,13 @@ LinkRunner.Game.prototype.hudUpdate = function() {
 	hudHTML += "Battery: " + this.player.batteryLevel;
 	hudHTML += "</p>";
 	this.$hud.html(hudHTML);
+	
+}
+
+LinkRunner.Game.prototype.winGame = function() {
+
+	this.game.state.start('Win');
+	
 }
 
 LinkRunner.Game.prototype.reduceBatteryPower = function() {
