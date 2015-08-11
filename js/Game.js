@@ -53,14 +53,60 @@ LinkRunner.Game.prototype.create = function() {
 	this.stateText = this.game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
 	this.stateText.fixedToCamera = true;
 	this.stateText.cameraOffset.setTo(400, 300);
-    this.stateText.anchor.setTo(0.5, 0.5);
-    this.stateText.visible = false;
+	this.stateText.anchor.setTo(0.5, 0.5);
+	this.stateText.visible = false;
 
 	// Set the camera to follow the player
 	this.game.camera.follow(this.player);
 
 	// Create HUD
 	this.$hud = $( "#hud" );
+
+	// TEST miniMap
+	// // TEST method
+	// this.miniMap = new MiniMap(this.game, 0, 0, this.map);
+	// this.game.add.existing(this.miniMap);
+	// // END TEST method
+	//TEST - code inline
+	// The pixel size of the mini map
+	var pixelSize = 1;
+
+	// Tile IDs
+	var dirtId = 20;
+	var pipeIds = [25, 26, 27, 28, 29];
+
+	// The static map
+	var miniMapBmd = this.game.add.bitmapData(this.map.width*pixelSize, this.map.height*pixelSize)
+	// (width, height, key, addToCache)
+
+	// Iterate over map layers
+	for (l=0; l<this.map.layers.length; l++)
+	{
+		for (y=0; y<this.map.height; y++)
+		{
+			for (x=0; x<this.map.width; x++)
+			{
+				var tile = this.map.getTile(x, y, l);
+				// check tile type and assign color
+				if (tile && tile.index == dirtId)
+				{
+					miniMapBmd.ctx.fillStyle = '#413039';
+					miniMapBmd.ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+				}
+				for (i=0; i<pipeIds.length; i++)
+				{
+					if (tile && tile.index == pipeIds[i])
+					{
+						miniMapBmd.ctx.fillStyle = '#c1bcbc';
+						miniMapBmd.ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+					}
+				}
+			}
+		}
+	}
+
+	this.miniMap = this.game.add.sprite(2200, 400, miniMapBmd);
+	// END TEST code inline
 
 }
 
