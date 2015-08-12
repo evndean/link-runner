@@ -17,6 +17,8 @@ LinkRunner.Game = function(game) {
 
 	this.$hud = null;
 
+	this.startTime = null;
+
 };
 
 LinkRunner.Game.prototype.create = function() {
@@ -62,6 +64,9 @@ LinkRunner.Game.prototype.create = function() {
 	// Create HUD
 	this.$hud = $( "#hud" );
 
+	// Set the game's start time (miliseconds)
+	this.startTime = this.game.time.now;
+
 }
 
 LinkRunner.Game.prototype.update = function() {
@@ -92,11 +97,17 @@ LinkRunner.Game.prototype.update = function() {
 
 LinkRunner.Game.prototype.hudUpdate = function() {
 
+	var elapsedSeconds = this.timeElapsedSeconds();
+	var minutes = Math.floor(elapsedSeconds / 60) % 60;
+	var seconds = elapsedSeconds % 60;
+
 	var hudHTML;
 	hudHTML = "<p>";
 	hudHTML += "Health: " + this.player.health;
 	hudHTML += "  |  ";
 	hudHTML += "Battery: " + this.player.batteryLevel;
+	hudHTML += "  |  ";
+	hudHTML += "Time elapsed: " + minutes + ":" + ( seconds < 10 ? "0" + seconds : seconds );
 	hudHTML += "</p>";
 	this.$hud.html(hudHTML);
 	
@@ -129,5 +140,13 @@ LinkRunner.Game.prototype.restart = function() {
 
 	// Hide state text
 	this.stateText.visible = false;
+
+}
+
+LinkRunner.Game.prototype.timeElapsedSeconds = function() {
+
+	var elapsedMs = this.game.time.now - this.startTime;
+
+	return Math.floor(elapsedMs / 1000);
 
 }
