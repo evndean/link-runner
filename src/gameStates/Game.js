@@ -90,7 +90,7 @@ LinkRunner.Game.prototype.update = function() {
 		this.stateText.visible = true;
 
 		// 'click to restart' handler
-		this.game.input.onTap.addOnce(restart, this);
+		this.game.input.onTap.addOnce(this.restart, this);
 	}
 
 }
