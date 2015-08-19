@@ -37,6 +37,17 @@ LinkRunner.Game.prototype.preload = function () {
 
 };
 
+LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
+
+	if (tiles.length > 0) {
+		for (i=0; i<tiles.length; i++) {
+			var tile = tiles[i];
+			this.map.setCollision(tile, true, layer);
+		}
+	}
+
+};
+
 LinkRunner.Game.prototype.create = function () {
 
 	// Add tilemap
@@ -47,16 +58,20 @@ LinkRunner.Game.prototype.create = function () {
 		this.map.addTilesetImage(this.currentTilesets[i].name);
 	}
 
+	// // Add tile layers and enable collisions
+	// for (var key in this.currentCollisionTiles) {
+	// 	this.key = this.map.createLayer(key);
+	// }
+
 	// Add tile layers
 	this.background = this.map.createLayer('background');
-	this.pipeWalls = this.map.createLayer('pipe-walls');
-	this.winZone = this.map.createLayer('win-zone');
+	this.pipeWalls = this.map.createLayer('pipeWalls');
+	this.winZone = this.map.createLayer('winZone');
 
-	// Enable collisions on the pipeWalls layer
-	this.map.setCollision(27, true, this.pipeWalls);  // pipe wall
-
-	// Enable collision with the winZone layer
-	this.map.setCollision(12, true, this.winZone); // blue tiles
+	// Enable collisions
+	this.enableCollisions(this.currentCollisionTiles.pipeWalls, this.pipeWalls);
+	this.enableCollisions(this.currentCollisionTiles.startZone, this.startZone);
+	this.enableCollisions(this.currentCollisionTiles.winZone, this.winZone);
 
 	// Resize the world
 	this.background.resizeWorld();

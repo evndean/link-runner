@@ -21,8 +21,8 @@ var levels = [
 		collisionTiles: {
 			background: [],
 			pipeWalls: [ 27 ],
-			winZone: [ 12 ],
 			startZone: [],
+			winZone: [ 12 ],
 		},
 	}, {
 		level: 2,
