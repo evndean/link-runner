@@ -11,8 +11,6 @@ LinkRunner.Game.prototype.init = function () {
 
 	this.player = null;
 
-	this.weapons = [];
-
 	this.batteryDrainTimer = null;
 
 	this.stateText = null;
