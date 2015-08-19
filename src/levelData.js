@@ -8,7 +8,7 @@
 var levels = [
 	{
 		level: 1,
-		tilemap: "map-01.json",
+		tilemap: "map-01",
 		tilesets: [
 			{
 				source: "dirt-platformer-tiles.png",
@@ -24,5 +24,10 @@ var levels = [
 			winZone: [ 12 ],
 			startZone: [],
 		},
+	}, {
+		level: 2,
+		tilemap: "banana",
+		tilesets: [],
+		collisionTiles: {},
 	}
 ]

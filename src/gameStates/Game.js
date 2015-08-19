@@ -19,14 +19,33 @@ LinkRunner.Game.prototype.init = function () {
 
 	this.startTime = null;
 
+	// early test of levels data
+	var currentLevel = 1;
+	for (i=0; i<levels.length; i++) {
+		if (levels[i].level == currentLevel) {
+			this.currentTilemap = levels[i].tilemap;
+			this.currentTilesets = levels[i].tilesets;
+			this.currentCollisionTiles = levels[i].collisionTiles;
+		}
+	}
+
 };
 
-LinkRunner.Game.prototype.create = function() {
+LinkRunner.Game.prototype.preload = function () {
+
+	// Load assets if needed
+
+};
+
+LinkRunner.Game.prototype.create = function () {
 
 	// Add tilemap
-	this.map = this.game.add.tilemap('map-01');
-	this.map.addTilesetImage('dirt');
-	this.map.addTilesetImage('pipe-walls');
+	this.map = this.game.add.tilemap(this.currentTilemap);
+
+	// Add tilesets
+	for (i=0; i<this.currentTilesets.length; i++) {
+		this.map.addTilesetImage(this.currentTilesets[i].name);
+	}
 
 	// Add tile layers
 	this.background = this.map.createLayer('background');
@@ -69,7 +88,7 @@ LinkRunner.Game.prototype.create = function() {
 
 }
 
-LinkRunner.Game.prototype.update = function() {
+LinkRunner.Game.prototype.update = function () {
 
 	// Update the HUD
 	this.hudUpdate();
@@ -95,7 +114,7 @@ LinkRunner.Game.prototype.update = function() {
 
 }
 
-LinkRunner.Game.prototype.hudUpdate = function() {
+LinkRunner.Game.prototype.hudUpdate = function () {
 
 	var elapsedSeconds = this.timeElapsedSeconds();
 	var minutes = Math.floor(elapsedSeconds / 60) % 60;
@@ -113,19 +132,19 @@ LinkRunner.Game.prototype.hudUpdate = function() {
 	
 }
 
-LinkRunner.Game.prototype.winGame = function() {
+LinkRunner.Game.prototype.winGame = function () {
 
 	this.game.state.start('Win');
 	
 }
 
-LinkRunner.Game.prototype.reduceBatteryPower = function() {
+LinkRunner.Game.prototype.reduceBatteryPower = function () {
 
 	this.player.batteryLevel--;
 
 },
 
-LinkRunner.Game.prototype.restart = function() {
+LinkRunner.Game.prototype.restart = function () {
 
 	// Revive the player
 	this.player.revive();
@@ -143,7 +162,7 @@ LinkRunner.Game.prototype.restart = function() {
 
 }
 
-LinkRunner.Game.prototype.timeElapsedSeconds = function() {
+LinkRunner.Game.prototype.timeElapsedSeconds = function () {
 
 	var elapsedMs = this.game.time.now - this.startTime;
 
