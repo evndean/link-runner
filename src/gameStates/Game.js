@@ -1,6 +1,8 @@
 var LinkRunner = LinkRunner || {};
 
-LinkRunner.Game = function(game) {
+LinkRunner.Game = function(game) {};
+
+LinkRunner.Game.prototype.init = function () {
 
 	this.map = null;
 
