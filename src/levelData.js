@@ -18,16 +18,17 @@ var levels = [
 				name: "pipe-walls",
 			}
 		],
+		startTileId: 12,
 		collisionTiles: {
 			background: [],
 			pipeWalls: [ 27 ],
-			startZone: [],
 			winZone: [ 12 ],
 		},
 	}, {
 		level: 2,
 		tilemap: "banana",
 		tilesets: [],
+		startTileId: 12,
 		collisionTiles: {},
 	}
 ]

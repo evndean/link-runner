@@ -26,6 +26,7 @@ LinkRunner.Game.prototype.init = function () {
 			this.currentTilemap = levels[i].tilemap;
 			this.currentTilesets = levels[i].tilesets;
 			this.currentCollisionTiles = levels[i].collisionTiles;
+			this.startTileId = levels[i].startTileId;
 		}
 	}
 
@@ -66,18 +67,27 @@ LinkRunner.Game.prototype.create = function () {
 	// Add tile layers
 	this.background = this.map.createLayer('background');
 	this.pipeWalls = this.map.createLayer('pipeWalls');
+	this.startZone = this.map.createLayer('startZone');
 	this.winZone = this.map.createLayer('winZone');
+
+	// Hide startZone and winZone
+	this.startZone.visible = false;
+	this.winZone.visible = false;
 
 	// Enable collisions
 	this.enableCollisions(this.currentCollisionTiles.pipeWalls, this.pipeWalls);
-	this.enableCollisions(this.currentCollisionTiles.startZone, this.startZone);
 	this.enableCollisions(this.currentCollisionTiles.winZone, this.winZone);
 
 	// Resize the world
 	this.background.resizeWorld();
 
+	// Get player's starting coordinates
+	var startTile = this.map.searchTileIndex(this.startTileId, 0, false, this.startZone);
+	var startX = startTile.worldX + startTile.centerX;
+	var startY = startTile.worldY + startTile.centerY;
+
 	// Create player
-	this.player = new Drone(this.game, 2514, 96);
+	this.player = new Drone(this.game, startX, startY);
 	this.game.add.existing(this.player);
 
 	// Create battery drain timer
