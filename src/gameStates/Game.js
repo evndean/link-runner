@@ -68,15 +68,15 @@ LinkRunner.Game.prototype.create = function () {
 	this.background = this.map.createLayer('background');
 	this.pipeWalls = this.map.createLayer('pipeWalls');
 	this.startZone = this.map.createLayer('startZone');
-	this.winZone = this.map.createLayer('winZone');
+	this.endZone = this.map.createLayer('endZone');
 
-	// Hide startZone and winZone
+	// Hide startZone and endZone
 	this.startZone.visible = false;
-	this.winZone.visible = false;
+	this.endZone.visible = false;
 
 	// Enable collisions
 	this.enableCollisions(this.currentCollisionTiles.pipeWalls, this.pipeWalls);
-	this.enableCollisions(this.currentCollisionTiles.winZone, this.winZone);
+	this.enableCollisions(this.currentCollisionTiles.endZone, this.endZone);
 
 	// Resize the world
 	this.background.resizeWorld();
@@ -121,7 +121,7 @@ LinkRunner.Game.prototype.update = function () {
 	// Check for collisions
 	this.game.physics.arcade.overlap(this.player, this.pipeWalls, this.player.collide, null, this.player);
 	this.game.physics.arcade.overlap(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
-	this.game.physics.arcade.overlap(this.player, this.winZone, this.winGame, null, this);
+	this.game.physics.arcade.overlap(this.player, this.endZone, this.winGame, null, this);
 
 	// Player dead?
 	if (this.player.isDead())
