@@ -8,6 +8,7 @@ LinkRunner.Preloader.prototype.preload = function () {
 
 	// Load the game assets
 	this.load.tilemap('map-01', 'assets/opengameart/tilemaps/json/map-01.json', null, Phaser.Tilemap.TILED_JSON);
+	this.load.tilemap('training-01', 'assets/opengameart/tilemaps/json/training-01.json', null, Phaser.Tilemap.TILED_JSON);
 	this.load.image('dirt', 'assets/opengameart/tilemaps/tiles/dirt-platformer-tiles.png');
 	this.load.image('pipe-walls', 'assets/opengameart/tilemaps/tiles/pipe-walls.png');
 	this.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
