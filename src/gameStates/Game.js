@@ -162,6 +162,13 @@ LinkRunner.Game.prototype.winLevel = function () {
 	// // breaks an update loop
 	// this.cursors = this.game.input.keyboard.createCursorKeys();
 
+	// Did the player win the game?
+	if (this.game.currentLevel == levels.length) {
+
+		this.game.state.start('Win');
+
+	}
+
 	// Display text
 	this.stateText.text = 'LEVEL COMPLETE\n\nPRESS SPACE\nTO CONTINUE';
 	this.stateText.visible = true;
