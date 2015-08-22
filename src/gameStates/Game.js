@@ -19,10 +19,8 @@ LinkRunner.Game.prototype.init = function () {
 
 	this.startTime = null;
 
-	// early test of levels data
-	var currentLevel = 1;
 	for (i=0; i<levels.length; i++) {
-		if (levels[i].level == currentLevel) {
+		if (levels[i].level == this.game.currentLevel) {
 			this.currentTilemap = levels[i].tilemap;
 			this.currentTilesets = levels[i].tilesets;
 			this.currentCollisionTiles = levels[i].collisionTiles;
@@ -96,7 +94,7 @@ LinkRunner.Game.prototype.create = function () {
 	this.batteryDrainTimer.start();
 
 	// Game state text
-	this.stateText = this.game.add.text(400, 300,' ', { fontSize: '60px', fill: '#000' });
+	this.stateText = this.game.add.text(400, 300,' ', { font: '50px Arial', fill: '#ffffff' });
 	this.stateText.fixedToCamera = true;
 	this.stateText.cameraOffset.setTo(400, 300);
     this.stateText.anchor.setTo(0.5, 0.5);
@@ -121,7 +119,7 @@ LinkRunner.Game.prototype.update = function () {
 	// Check for collisions
 	this.game.physics.arcade.overlap(this.player, this.pipeWalls, this.player.collide, null, this.player);
 	this.game.physics.arcade.overlap(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
-	this.game.physics.arcade.overlap(this.player, this.endZone, this.winGame, null, this);
+	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
 
 	// Player dead?
 	if (this.player.isDead())
@@ -157,10 +155,31 @@ LinkRunner.Game.prototype.hudUpdate = function () {
 	
 }
 
-LinkRunner.Game.prototype.winGame = function () {
+LinkRunner.Game.prototype.winLevel = function () {
 
-	this.game.state.start('Win');
+	// // Disable player input?
+	// // trying to hijack the cursors doesn't work, and removing them from the drone
+	// // breaks an update loop
+	// this.cursors = this.game.input.keyboard.createCursorKeys();
+
+	// Display text
+	this.stateText.text = 'LEVEL COMPLETE\n\nPRESS SPACE\nTO CONTINUE';
+	this.stateText.visible = true;
+
+	// Wait for player input
+	var continueKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+	// Call the start function
+	continueKey.onDown.addOnce(this.nextLevel, this);
 	
+}
+
+LinkRunner.Game.prototype.nextLevel = function () {
+
+	this.game.currentLevel++;
+
+	this.game.state.start('Game');
+
 }
 
 LinkRunner.Game.prototype.reduceBatteryPower = function () {
