@@ -19,14 +19,11 @@ LinkRunner.Game.prototype.init = function () {
 
 	this.startTime = null;
 
-	for (i=0; i<levels.length; i++) {
-		if (levels[i].level == this.game.currentLevel) {
-			this.currentTilemap = levels[i].tilemap;
-			this.currentTilesets = levels[i].tilesets;
-			this.currentCollisionTiles = levels[i].collisionTiles;
-			this.startTileId = levels[i].startTileId;
-		}
-	}
+	var level = levels[this.game.currentLevel-1];
+	this.currentTilemap        = level.tilemap;
+	this.currentTilesets       = level.tilesets;
+	this.currentCollisionTiles = level.collisionTiles;
+	this.startTileId           = level.startTileId;
 
 };
 

@@ -7,7 +7,6 @@
 
 var levels = [
 	{
-		level: 1,
 		tilemap: "training-01",
 		tilesets: [
 			{
@@ -22,7 +21,6 @@ var levels = [
 			endZone: [ 12 ],
 		},
 	}, {
-		level: 2,
 		tilemap: "map-01",
 		tilesets: [
 			{
