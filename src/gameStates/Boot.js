@@ -1,35 +1,29 @@
 var LinkRunner = LinkRunner || {};
 
-LinkRunner.Boot = function (game) {
+LinkRunner.Boot = function (game) {};
+
+LinkRunner.Boot.prototype.init = function () {
+
+	// No need for multi-touch
+	this.input.maxPointers = 1;
+
+	// Stop Phaser from automatically pausing if the browser tab loses focus
+	this.stage.disableVisibilityChange = true;
 
 };
 
-LinkRunner.Boot.prototype =  {
+LinkRunner.Boot.prototype.preload = function () {
 
-	init: function () {
+	// If using a preloader progress bar, load the assets for it here
 
-		// No need for multi-touch
-		this.input.maxPointers = 1;
+};
 
-		// Stop Phaser from automatically pausing if the browser tab loses focus
-		this.stage.disableVisibilityChange = true;
+LinkRunner.Boot.prototype.create = function () {
 
-	},
+	// Start the physics system
+	this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-	preload: function () {
-
-		// If using a preloader progress bar, load the assets for it here
-
-	},
-
-	create: function () {
-
-		// Start the physics system
-		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-
-		// Call the load state
-		this.game.state.start('Preloader');
-
-	}
+	// Call the load state
+	this.game.state.start('Preloader');
 
 };

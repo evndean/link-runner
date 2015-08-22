@@ -20,6 +20,8 @@ LinkRunner.Win.prototype.create = function() {
 
 LinkRunner.Win.prototype.restart = function() {
 
+	this.game.currentLevel = 1;
+
 	this.game.state.start('Game');
 
 };
