@@ -18,6 +18,25 @@ var levels = [
 		collisionTiles: {
 			background: [],
 			pipeWalls: [ 27 ],
+			targets: [],
+			endZone: [ 12 ],
+		},
+	}, {
+		tilemap: "training-02",
+		tilesets: [
+			{
+				source: "dirt-platformer-tiles.png",
+				name: "dirt",
+			}, {
+				source: "pipe-walls.png",
+				name: "pipe-walls",
+			}
+		],
+		startTileId: 12,
+		collisionTiles: {
+			background: [],
+			pipeWalls: [ 27 ],
+			targets: [ 4 ],
 			endZone: [ 12 ],
 		},
 	}, {
@@ -35,6 +54,7 @@ var levels = [
 		collisionTiles: {
 			background: [],
 			pipeWalls: [ 27 ],
+			targets: [],
 			endZone: [ 12 ],
 		},
 	},

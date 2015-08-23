@@ -54,11 +54,6 @@ LinkRunner.Game.prototype.create = function () {
 		this.map.addTilesetImage(this.currentTilesets[i].name);
 	}
 
-	// // Add tile layers and enable collisions
-	// for (var key in this.currentCollisionTiles) {
-	// 	this.key = this.map.createLayer(key);
-	// }
-
 	// Add tile layers
 	this.background = this.map.createLayer('background');
 	this.pipeWalls = this.map.createLayer('pipeWalls');
@@ -75,6 +70,13 @@ LinkRunner.Game.prototype.create = function () {
 
 	// Resize the world
 	this.background.resizeWorld();
+
+	// Add barriers group (to shoot at)
+	this.barriers = this.game.add.group();
+	this.barriers.enableBody = true;
+	this.map.createFromObjects('barriers', 4, 'dirt', 4, true, false, this.barriers);
+	this.barriers.physicsBodyType = Phaser.Physics.ARCADE;
+	this.barriers.setAll('body.immovable', true);
 
 	// Get player's starting coordinates
 	var startTile = this.map.searchTileIndex(this.startTileId, 0, false, this.startZone);
@@ -113,9 +115,13 @@ LinkRunner.Game.prototype.update = function () {
 	// Update the HUD
 	this.hudUpdate();
 
+	// Enable collisions between player and barriers
+	this.game.physics.arcade.collide(this.player, this.barriers);
+
 	// Check for collisions
 	this.game.physics.arcade.overlap(this.player, this.pipeWalls, this.player.collide, null, this.player);
 	this.game.physics.arcade.overlap(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
+	this.game.physics.arcade.overlap(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
 	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
 
 	// Player dead?

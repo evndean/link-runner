@@ -42,3 +42,10 @@ Weapon.Beam.prototype.hitWall = function(beam, layer) {
 	beam.kill();
 
 }
+
+Weapon.Beam.prototype.hitBarrier = function(beam, layer) {
+
+	beam.kill();
+	layer.kill();
+
+};
