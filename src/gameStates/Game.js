@@ -125,11 +125,11 @@ LinkRunner.Game.prototype.update = function () {
 
 		this.batteryDrainTimer.stop();
 
-		this.stateText.text = 'GAME OVER\nClick to restart';
+		this.stateText.text = 'GAME OVER\nClick to restart level';
 		this.stateText.visible = true;
 
 		// 'click to restart' handler
-		this.game.input.onTap.addOnce(this.restart, this);
+		this.game.input.onTap.addOnce(this.reloadLevel, this);
 	}
 
 }
@@ -192,21 +192,9 @@ LinkRunner.Game.prototype.reduceBatteryPower = function () {
 
 },
 
-LinkRunner.Game.prototype.restart = function () {
+LinkRunner.Game.prototype.reloadLevel = function () {
 
-	// Revive the player
-	this.player.revive();
-	this.player.body.velocity.setTo(0, 0);
-	this.player.health = 100;
-	this.player.batteryLevel = 100;
-
-	// Recreate battery drain timer
-	this.batteryDrainTimer = this.game.time.create(false);
-	this.batteryDrainTimer.loop(5000, this.reduceBatteryPower, this);
-	this.batteryDrainTimer.start();
-
-	// Hide state text
-	this.stateText.visible = false;
+	this.game.state.start('Game');
 
 }
 
