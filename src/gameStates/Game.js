@@ -110,11 +110,14 @@ LinkRunner.Game.prototype.create = function () {
 
 LinkRunner.Game.prototype.update = function () {
 
+	// Debugging
+	this.game.debug.bodyInfo(this.player, 20, 100);
+
 	// Update the HUD
 	this.hudUpdate();
 
 	// Check for collisions
-	this.game.physics.arcade.overlap(this.player, this.pipeWalls, this.player.collide, null, this.player);
+	this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
 	this.game.physics.arcade.overlap(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
 	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
 

@@ -2,15 +2,17 @@ var Drone = function(game, x, y) {
 
 	Phaser.Sprite.call(this, game, x, y, 'drone');
 
-	this.health = 100;
+	this.health = 3;
 	this.batteryLevel = 100;
+	this.hardCollision = 50;
+	this.velocityAtCollision = null;
 
 	// Physics
 	game.physics.enable(this);
 	this.body.allowGravity = false;
 	this.body.collideWorldBounds = true;
 	this.body.velocity.setTo(0, 0);
-	this.body.bounce.setTo(0.3, 0.3);
+	this.body.bounce.setTo(0.35, 0.35);
 	this.body.maxVelocity.set(250);
 	this.body.drag.set(150);
 
@@ -88,10 +90,24 @@ Drone.prototype.update = function() {
 
 }
 
-Drone.prototype.collide = function () {
+Drone.prototype.beforeCollision = function () {
 
-	// Reduce health by 1, update health text
-	this.health = this.health - 1;
+	// Get the player's velocity at the time of collision (player's velocity gets reset to 0 before onCollision() is called)
+	this.velocityAtCollision = this.body.velocity;
+
+	// Return true so onCollision() gets called upon collision
+	return true;
+
+}
+
+Drone.prototype.onCollision = function () {
+
+	if (Math.abs(this.velocityAtCollision.x) >= this.hardCollision || Math.abs(this.velocityAtCollision.y) >= this.hardCollision) {
+
+		// Reduce health by 1
+		this.health = this.health - 1;
+
+	}
 
 }
 
