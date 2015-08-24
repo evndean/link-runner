@@ -21,6 +21,9 @@ var Drone = function(game, x, y) {
 	this.animations.play('fly');
 	this.anchor.setTo(0.5, 0.5)  // Sprite flips on center axis when switching directions.
 
+	// Sound Effects
+	this.crashSound = game.add.audio('crash');
+
 	// Weapon
 	this.weapon = new Weapon.Beam(this.game);
 
@@ -103,6 +106,9 @@ Drone.prototype.beforeCollision = function () {
 Drone.prototype.onCollision = function () {
 
 	if (Math.abs(this.velocityAtCollision.x) >= this.hardCollision || Math.abs(this.velocityAtCollision.y) >= this.hardCollision) {
+
+		// Play crash sound
+		this.crashSound.play();
 
 		// Reduce health by 1
 		this.health = this.health - 1;
