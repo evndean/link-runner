@@ -33,6 +33,9 @@ LinkRunner.Instructions.prototype.create = function() {
 
 LinkRunner.Instructions.prototype.start = function() {
 
+	// Initialize the current level counter
+	this.game.currentLevel = 1;
+
 	this.game.state.start('Game');
 
 };
