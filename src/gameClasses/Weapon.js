@@ -16,6 +16,9 @@ Weapon.Beam = function (game) {
 
 	}
 
+	// Sound effect
+	this.laserSound = game.add.audio('laser');
+
 	return this;
 
 };
@@ -30,6 +33,9 @@ Weapon.Beam.prototype.fire = function (source) {
 	var x = source.x + 10 * source.scale.x;
 	var y = source.y + 5;
 	var direction = source.scale.x
+
+	// Play sound
+	this.laserSound.play();
 
 	this.getFirstExists(false).fire(x, y, this.bulletSpeed, direction);
 
