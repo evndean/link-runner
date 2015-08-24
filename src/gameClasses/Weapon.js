@@ -7,8 +7,8 @@ Weapon.Beam = function (game) {
 	Phaser.Group.call(this, game, game.world, 'Beam', false, true, Phaser.Physics.ARCADE);
 
 	this.nextFire = 0;
-	this.bulletSpeed = 1000;
-	this.fireRate = 45;
+	this.bulletSpeed = 750;
+	this.fireRate = 500;
 
 	for (var i = 0; i < 64; i++) {
 
