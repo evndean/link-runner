@@ -121,7 +121,7 @@ LinkRunner.Game.prototype.update = function () {
 	// Player dead?
 	if (this.player.isDead())
 	{
-		this.player.kill();
+		this.player.destroy();
 
 		this.batteryDrainTimer.stop();
 
