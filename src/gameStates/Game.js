@@ -2,30 +2,6 @@ var LinkRunner = LinkRunner || {};
 
 LinkRunner.Game = function(game) {};
 
-LinkRunner.Game.prototype.init = function () {
-
-	this.map = null;
-
-	this.background = null;
-	this.pipeWalls = null;
-
-	this.player = null;
-
-	this.batteryDrainTimer = null;
-
-	this.stateText = null;
-
-	this.startTime = null;
-
-	// Get data for the current level from the levels data structure
-	var level = levels[this.game.currentLevel-1];
-	this.currentTilemap        = level.tilemap;
-	this.currentTilesets       = level.tilesets;
-	this.currentCollisionTiles = level.collisionTiles;
-	this.startTileId           = level.startTileId;
-
-};
-
 LinkRunner.Game.prototype.preload = function () {
 
 	// Load assets if needed
@@ -44,6 +20,13 @@ LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
 };
 
 LinkRunner.Game.prototype.create = function () {
+
+	// Get data for the current level from the levels data structure
+	var level = levels[this.game.currentLevel-1];
+	this.currentTilemap        = level.tilemap;
+	this.currentTilesets       = level.tilesets;
+	this.currentCollisionTiles = level.collisionTiles;
+	this.startTileId           = level.startTileId;
 
 	// Add tilemap
 	this.map = this.game.add.tilemap(this.currentTilemap);
