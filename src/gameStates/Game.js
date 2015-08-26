@@ -53,11 +53,6 @@ LinkRunner.Game.prototype.create = function () {
 		this.map.addTilesetImage(this.currentTilesets[i].name);
 	}
 
-	// // Add tile layers and enable collisions
-	// for (var key in this.currentCollisionTiles) {
-	// 	this.key = this.map.createLayer(key);
-	// }
-
 	// Add tile layers
 	this.background = this.map.createLayer('background');
 	this.pipeWalls = this.map.createLayer('pipeWalls');
