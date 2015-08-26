@@ -7,13 +7,13 @@ LinkRunner.Instructions.prototype.create = function() {
 	var headerFont = { font: '50px Arial', fill: '#ffffff' };
 	var bodyFont = { font: '25px Arial', fill: '#ffffff' };
 
-	// Header - Instructions
+	// Display header for instructions
 	var instructionsHeader = this.game.add.text(80, 80, 'Instructions', headerFont);
 
 	// Display instructions
 	var instructionsBody = this.game.add.text(100, 160, 'Guide the drone to the exit', bodyFont);
 
-	// Header - Controls
+	// Display header for controls
 	var controlsHeader = this.game.add.text(80, 280, 'Controls', headerFont);
 
 	// Display controls

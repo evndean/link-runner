@@ -27,7 +27,7 @@ var Drone = function(game, x, y) {
 	// Weapon
 	this.weapon = new Weapon.Beam(this.game);
 
-	// Controls
+	// Add player controls
 	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
 	this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 

@@ -17,6 +17,7 @@ LinkRunner.Game.prototype.init = function () {
 
 	this.startTime = null;
 
+	// Get data for the current level from the levels data structure
 	var level = levels[this.game.currentLevel-1];
 	this.currentTilemap        = level.tilemap;
 	this.currentTilesets       = level.tilesets;
@@ -88,7 +89,7 @@ LinkRunner.Game.prototype.create = function () {
 	this.batteryDrainTimer.loop(5000, this.reduceBatteryPower, this);
 	this.batteryDrainTimer.start();
 
-	// Game state text
+	// Initialize game state text
 	this.stateText = this.game.add.text(400, 300,' ', { font: '50px Arial', fill: '#ffffff' });
 	this.stateText.fixedToCamera = true;
 	this.stateText.cameraOffset.setTo(400, 300);
