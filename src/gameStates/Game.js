@@ -72,7 +72,7 @@ LinkRunner.Game.prototype.create = function () {
 	// Set the game's start time (miliseconds)
 	this.startTime = this.game.time.now;
 
-}
+};
 
 LinkRunner.Game.prototype.update = function () {
 
@@ -98,7 +98,7 @@ LinkRunner.Game.prototype.update = function () {
 		this.game.input.onTap.addOnce(this.reloadLevel, this);
 	}
 
-}
+};
 
 LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
 
@@ -127,7 +127,7 @@ LinkRunner.Game.prototype.hudUpdate = function () {
 	hudHTML += "</p>";
 	this.game.$hud.html(hudHTML);
 	
-}
+};
 
 LinkRunner.Game.prototype.winLevel = function () {
 
@@ -153,7 +153,7 @@ LinkRunner.Game.prototype.winLevel = function () {
 	// Call the start function
 	continueKey.onDown.addOnce(this.nextLevel, this);
 	
-}
+};
 
 LinkRunner.Game.prototype.nextLevel = function () {
 
@@ -161,19 +161,19 @@ LinkRunner.Game.prototype.nextLevel = function () {
 
 	this.game.state.start('Game');
 
-}
+};
 
 LinkRunner.Game.prototype.reduceBatteryPower = function () {
 
 	this.player.batteryLevel--;
 
-},
+};
 
 LinkRunner.Game.prototype.reloadLevel = function () {
 
 	this.game.state.start('Game');
 
-}
+};
 
 LinkRunner.Game.prototype.timeElapsedSeconds = function () {
 
@@ -181,4 +181,4 @@ LinkRunner.Game.prototype.timeElapsedSeconds = function () {
 
 	return Math.floor(elapsedMs / 1000);
 
-}
+};
