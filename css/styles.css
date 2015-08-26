@@ -1,3 +1,8 @@
+@font-face {
+	font-family: 'PressStart2P';
+	src: url('../assets/fonts/press-start-2p/PressStart2P.ttf');
+}
+
 body {
 	margin: 0;
 }
@@ -18,6 +23,7 @@ body {
 	margin: 0px 10px;
 }
 #hud p {
+	font-family: 'PressStart2P';
 	text-align: center;
 	margin-top: 5px;
 }
