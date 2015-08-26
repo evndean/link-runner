@@ -47,4 +47,4 @@ Weapon.Beam.prototype.hitWall = function(beam, layer) {
 
 	beam.kill();
 
-}
+};

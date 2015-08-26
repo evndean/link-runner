@@ -27,11 +27,11 @@ var Drone = function(game, x, y) {
 	// Weapon
 	this.weapon = new Weapon.Beam(this.game);
 
-	// Controls
+	// Add player controls
 	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
 	this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-}
+};
 
 Drone.prototype = Object.create(Phaser.Sprite.prototype);
 Drone.prototype.constructor = Drone;
@@ -91,7 +91,7 @@ Drone.prototype.update = function() {
 		this.weapon.fire(this);
 	}
 
-}
+};
 
 Drone.prototype.beforeCollision = function () {
 
@@ -101,7 +101,7 @@ Drone.prototype.beforeCollision = function () {
 	// Return true so onCollision() gets called upon collision
 	return true;
 
-}
+};
 
 Drone.prototype.onCollision = function () {
 
@@ -115,7 +115,7 @@ Drone.prototype.onCollision = function () {
 
 	}
 
-}
+};
 
 Drone.prototype.isDead = function () {
 
@@ -131,4 +131,4 @@ Drone.prototype.isDead = function () {
 
 	return false;
 
-}
+};

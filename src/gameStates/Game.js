@@ -2,47 +2,20 @@ var LinkRunner = LinkRunner || {};
 
 LinkRunner.Game = function(game) {};
 
-LinkRunner.Game.prototype.init = function () {
-
-	this.map = null;
-
-	this.background = null;
-	this.pipeWalls = null;
-
-	this.player = null;
-
-	this.batteryDrainTimer = null;
-
-	this.stateText = null;
-
-	this.startTime = null;
-
-	var level = levels[this.game.currentLevel-1];
-	this.currentTilemap        = level.tilemap;
-	this.currentTilesets       = level.tilesets;
-	this.currentCollisionTiles = level.collisionTiles;
-	this.startTileId           = level.startTileId;
-
-};
-
 LinkRunner.Game.prototype.preload = function () {
 
 	// Load assets if needed
 
 };
 
-LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
-
-	if (tiles.length > 0) {
-		for (i=0; i<tiles.length; i++) {
-			var tile = tiles[i];
-			this.map.setCollision(tile, true, layer);
-		}
-	}
-
-};
-
 LinkRunner.Game.prototype.create = function () {
+
+	// Get data for the current level from the levels data structure
+	var level = levels[this.game.currentLevel-1];
+	this.currentTilemap        = level.tilemap;
+	this.currentTilesets       = level.tilesets;
+	this.currentCollisionTiles = level.collisionTiles;
+	this.startTileId           = level.startTileId;
 
 	// Add tilemap
 	this.map = this.game.add.tilemap(this.currentTilemap);
@@ -51,11 +24,6 @@ LinkRunner.Game.prototype.create = function () {
 	for (i=0; i<this.currentTilesets.length; i++) {
 		this.map.addTilesetImage(this.currentTilesets[i].name);
 	}
-
-	// // Add tile layers and enable collisions
-	// for (var key in this.currentCollisionTiles) {
-	// 	this.key = this.map.createLayer(key);
-	// }
 
 	// Add tile layers
 	this.background = this.map.createLayer('background');
@@ -88,7 +56,7 @@ LinkRunner.Game.prototype.create = function () {
 	this.batteryDrainTimer.loop(5000, this.reduceBatteryPower, this);
 	this.batteryDrainTimer.start();
 
-	// Game state text
+	// Initialize game state text
 	this.stateText = this.game.add.text(400, 300,' ', { font: '50px Arial', fill: '#ffffff' });
 	this.stateText.fixedToCamera = true;
 	this.stateText.cameraOffset.setTo(400, 300);
@@ -104,7 +72,7 @@ LinkRunner.Game.prototype.create = function () {
 	// Set the game's start time (miliseconds)
 	this.startTime = this.game.time.now;
 
-}
+};
 
 LinkRunner.Game.prototype.update = function () {
 
@@ -130,7 +98,18 @@ LinkRunner.Game.prototype.update = function () {
 		this.game.input.onTap.addOnce(this.reloadLevel, this);
 	}
 
-}
+};
+
+LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
+
+	if (tiles.length > 0) {
+		for (i=0; i<tiles.length; i++) {
+			var tile = tiles[i];
+			this.map.setCollision(tile, true, layer);
+		}
+	}
+
+};
 
 LinkRunner.Game.prototype.hudUpdate = function () {
 
@@ -148,7 +127,7 @@ LinkRunner.Game.prototype.hudUpdate = function () {
 	hudHTML += "</p>";
 	this.game.$hud.html(hudHTML);
 	
-}
+};
 
 LinkRunner.Game.prototype.winLevel = function () {
 
@@ -174,7 +153,7 @@ LinkRunner.Game.prototype.winLevel = function () {
 	// Call the start function
 	continueKey.onDown.addOnce(this.nextLevel, this);
 	
-}
+};
 
 LinkRunner.Game.prototype.nextLevel = function () {
 
@@ -182,19 +161,19 @@ LinkRunner.Game.prototype.nextLevel = function () {
 
 	this.game.state.start('Game');
 
-}
+};
 
 LinkRunner.Game.prototype.reduceBatteryPower = function () {
 
 	this.player.batteryLevel--;
 
-},
+};
 
 LinkRunner.Game.prototype.reloadLevel = function () {
 
 	this.game.state.start('Game');
 
-}
+};
 
 LinkRunner.Game.prototype.timeElapsedSeconds = function () {
 
@@ -202,4 +181,4 @@ LinkRunner.Game.prototype.timeElapsedSeconds = function () {
 
 	return Math.floor(elapsedMs / 1000);
 
-}
+};

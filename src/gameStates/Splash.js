@@ -10,7 +10,7 @@ LinkRunner.Splash.prototype.create = function() {
 	// Display instructions
 	var startLabel = this.game.add.text(80, this.game.world.height-100, 'Press space to continue', { font: '25px Arial', fill: '#ffffff' });
 
-	// Player input
+	// Add player input
 	var startKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	// Call the start function
