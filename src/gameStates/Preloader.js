@@ -14,6 +14,7 @@ LinkRunner.Preloader.prototype.preload = function () {
 	this.load.image('pipe-walls', 'assets/opengameart/tilemaps/tiles/pipe-walls.png');
 	this.load.image('lazerBeam', 'assets/phaser/games/invaders/bullet.png');  // Temporarily using a bullet image
 	this.load.spritesheet('drone', 'assets/spritesheets/drone.png', 64, 26);
+	this.load.spritesheet('dirtSheet', 'assets/opengameart/tilemaps/tiles/dirt-platformer-tiles.png', 32, 32);
 	this.load.audio('laser', 'assets/audio/33-laser.wav');
 	this.load.audio('crash', 'assets/audio/14-crash.wav');
 

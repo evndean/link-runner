@@ -36,7 +36,7 @@ var levels = [
 		collisionTiles: {
 			background: [],
 			pipeWalls: [ 27 ],
-			targets: [ 4 ],
+			targets: [ 3 ],
 			endZone: [ 12 ],
 		},
 	}, {

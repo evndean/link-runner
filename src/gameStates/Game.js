@@ -74,7 +74,7 @@ LinkRunner.Game.prototype.create = function () {
 	// Add barriers group (to shoot at)
 	this.barriers = this.game.add.group();
 	this.barriers.enableBody = true;
-	this.map.createFromObjects('barriers', 4, 'dirt', 4, true, false, this.barriers);
+	this.map.createFromObjects('barriers', 4, 'dirtSheet', 3, true, false, this.barriers);
 	this.barriers.physicsBodyType = Phaser.Physics.ARCADE;
 	this.barriers.setAll('body.immovable', true);
 
