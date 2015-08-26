@@ -8,17 +8,6 @@ LinkRunner.Game.prototype.preload = function () {
 
 };
 
-LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
-
-	if (tiles.length > 0) {
-		for (i=0; i<tiles.length; i++) {
-			var tile = tiles[i];
-			this.map.setCollision(tile, true, layer);
-		}
-	}
-
-};
-
 LinkRunner.Game.prototype.create = function () {
 
 	// Get data for the current level from the levels data structure
@@ -110,6 +99,17 @@ LinkRunner.Game.prototype.update = function () {
 	}
 
 }
+
+LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
+
+	if (tiles.length > 0) {
+		for (i=0; i<tiles.length; i++) {
+			var tile = tiles[i];
+			this.map.setCollision(tile, true, layer);
+		}
+	}
+
+};
 
 LinkRunner.Game.prototype.hudUpdate = function () {
 
