@@ -25,5 +25,5 @@ body {
 #hud p {
 	font-family: 'PressStart2P';
 	text-align: center;
-	margin-top: 5px;
+	vertical-align: middle;
 }
