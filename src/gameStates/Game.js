@@ -15,8 +15,6 @@ LinkRunner.Game.prototype.init = function () {
 
 	this.stateText = null;
 
-	this.$hud = null;
-
 	this.startTime = null;
 
 	var level = levels[this.game.currentLevel-1];
@@ -100,8 +98,8 @@ LinkRunner.Game.prototype.create = function () {
 	// Set the camera to follow the player
 	this.game.camera.follow(this.player);
 
-	// Create HUD
-	this.$hud = $( "#hud" );
+	// Show HUD
+	this.game.$hud.show();
 
 	// Set the game's start time (miliseconds)
 	this.startTime = this.game.time.now;
@@ -148,7 +146,7 @@ LinkRunner.Game.prototype.hudUpdate = function () {
 	hudHTML += "  |  ";
 	hudHTML += "Time elapsed: " + minutes + ":" + ( seconds < 10 ? "0" + seconds : seconds );
 	hudHTML += "</p>";
-	this.$hud.html(hudHTML);
+	this.game.$hud.html(hudHTML);
 	
 }
 
