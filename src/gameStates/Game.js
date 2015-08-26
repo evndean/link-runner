@@ -110,9 +110,6 @@ LinkRunner.Game.prototype.create = function () {
 
 LinkRunner.Game.prototype.update = function () {
 
-	// Debugging
-	this.game.debug.bodyInfo(this.player, 20, 100);
-
 	// Update the HUD
 	this.hudUpdate();
 
@@ -124,7 +121,7 @@ LinkRunner.Game.prototype.update = function () {
 	// Player dead?
 	if (this.player.isDead())
 	{
-		this.player.kill();
+		this.player.destroy();
 
 		this.batteryDrainTimer.stop();
 
