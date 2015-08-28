@@ -33,7 +33,7 @@ LinkRunner.Game.prototype.preload = function () {
 
 };
 
-LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
+LinkRunner.Game.prototype.enableTileCollisions = function (tiles, layer) {
 
 	if (tiles.length > 0) {
 		for (i=0; i<tiles.length; i++) {
@@ -64,9 +64,9 @@ LinkRunner.Game.prototype.create = function () {
 	this.startZone.visible = false;
 	this.endZone.visible = false;
 
-	// Enable collisions
-	this.enableCollisions(this.currentCollisionTiles.pipeWalls, this.pipeWalls);
-	this.enableCollisions(this.currentCollisionTiles.endZone, this.endZone);
+	// Enable collisions for tilemap items
+	this.enableTileCollisions(this.currentCollisionTiles.pipeWalls, this.pipeWalls);
+	this.enableTileCollisions(this.currentCollisionTiles.endZone, this.endZone);
 
 	// Resize the world
 	this.background.resizeWorld();
