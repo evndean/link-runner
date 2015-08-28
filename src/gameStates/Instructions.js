@@ -4,8 +4,8 @@ LinkRunner.Instructions = function(game) {};
 
 LinkRunner.Instructions.prototype.create = function() {
 
-	var headerFont = { font: '50px Arial', fill: '#ffffff' };
-	var bodyFont = { font: '25px Arial', fill: '#ffffff' };
+	var headerFont = { font: '42px PressStart2P', fill: '#ffffff' };
+	var bodyFont = { font: '16px PressStart2P', fill: '#ffffff' };
 
 	// Display header for instructions
 	var instructionsHeader = this.game.add.text(80, 80, 'Instructions', headerFont);

@@ -1,10 +1,11 @@
 @font-face {
 	font-family: 'PressStart2P';
-	src: url('../assets/fonts/press-start-2p/PressStart2P.ttf');
+	src: url('../assets/fonts/press-start-2p/PressStart2P.ttf') format('truetype');
 }
 
 body {
 	margin: 0;
+	font-family: 'PressStart2P';
 }
 #game-container {
 	width: 800px;
