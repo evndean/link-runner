@@ -131,10 +131,12 @@ LinkRunner.Game.prototype.hudUpdate = function () {
 
 LinkRunner.Game.prototype.winLevel = function () {
 
-	// // Disable player input?
-	// // trying to hijack the cursors doesn't work, and removing them from the drone
-	// // breaks an update loop
-	// this.cursors = this.game.input.keyboard.createCursorKeys();
+	// Disable player input
+	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.UP);
+	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.DOWN);
+	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.LEFT);
+	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.RIGHT);
+	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 
 	// Did the player win the game?
 	if (this.game.currentLevel == levels.length) {
