@@ -18,6 +18,9 @@ LinkRunner.Instructions.prototype.create = function() {
 	this.controlsBodyText = this.game.add.text(100, 360, 'Arrow keys (up, down, left, right) to move\nSpacebar to shoot', bodyFont);
 	this.pressStartText = this.game.add.text(80, this.game.world.height-100, 'Press space to continue', bodyFont);
 
+	// Start with the 'press start' text hidden
+	this.pressStartText.visible = false;
+
 	// Add player input
 	this.startKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
