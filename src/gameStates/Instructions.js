@@ -7,27 +7,33 @@ LinkRunner.Instructions.prototype.create = function() {
 	var headerFont = { font: '42px PressStart2P', fill: '#ffffff' };
 	var bodyFont = { font: '16px PressStart2P', fill: '#ffffff' };
 
-	// Display header for instructions
-	var instructionsHeader = this.game.add.text(80, 80, 'Instructions', headerFont);
+	// Initialize timer for blinking text
+	this.blinkTimer = 0;
+	this.blinkInterval = 1000;
 
-	// Display instructions
-	var instructionsBody = this.game.add.text(100, 160, 'Guide the drone to the exit', bodyFont);
+	// Add text to screen
+	this.instructionsHeaderText = this.game.add.text(80, 80, 'Instructions', headerFont);
+	this.instructionsBodyText = this.game.add.text(100, 160, 'Guide the drone to the exit', bodyFont);
+	this.controlsHeaderText = this.game.add.text(80, 280, 'Controls', headerFont);
+	this.controlsBodyText = this.game.add.text(100, 360, 'Arrow keys (up, down, left, right) to move\nSpacebar to shoot', bodyFont);
+	this.pressStartText = this.game.add.text(80, this.game.world.height-100, 'Press space to continue', bodyFont);
 
-	// Display header for controls
-	var controlsHeader = this.game.add.text(80, 280, 'Controls', headerFont);
-
-	// Display controls
-	var controlText = 'Arrow keys (up, down, left, right) to move\nSpacebar to shoot'
-	var controlLabel = this.game.add.text(100, 360, controlText, bodyFont);
-
-	// Display instructions
-	var startLabel = this.game.add.text(80, this.game.world.height-100, 'Press space to continue', bodyFont);
-
-	// Player input
-	var startKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	// Add player input
+	this.startKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	// Call the start function
-	startKey.onDown.addOnce(this.start, this);
+	this.startKey.onDown.addOnce(this.start, this);
+
+};
+
+LinkRunner.Instructions.prototype.update = function() {
+
+	this.blinkTimer += this.game.time.elapsed;
+	if (this.blinkTimer >= this.blinkInterval)
+	{
+		this.blinkTimer -= this.blinkInterval;
+		this.pressStartText.visible = !this.pressStartText.visible;
+	}
 
 };
 
