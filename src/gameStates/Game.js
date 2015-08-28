@@ -57,7 +57,7 @@ LinkRunner.Game.prototype.create = function () {
 	this.batteryDrainTimer.start();
 
 	// Initialize game state text
-	this.stateText = this.game.add.text(400, 300,' ', { font: '50px Arial', fill: '#ffffff' });
+	this.stateText = this.game.add.text(400, 300,' ', { font: '42px PressStart2P', fill: '#ffffff' });
 	this.stateText.fixedToCamera = true;
 	this.stateText.cameraOffset.setTo(400, 300);
     this.stateText.anchor.setTo(0.5, 0.5);
@@ -91,7 +91,7 @@ LinkRunner.Game.prototype.update = function () {
 
 		this.batteryDrainTimer.stop();
 
-		this.stateText.text = 'GAME OVER\nClick to restart level';
+		this.stateText.text = 'GAME OVER\nClick to\nrestart level';
 		this.stateText.visible = true;
 
 		// 'click to restart' handler
