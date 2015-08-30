@@ -86,8 +86,8 @@ LinkRunner.Game.prototype.update = function () {
 	// Check for collisions
 	this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
 	this.game.physics.arcade.collide(this.player, this.barriers, this.player.onCollision, this.player.beforeCollision, this.player);;
-	this.game.physics.arcade.overlap(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
-	this.game.physics.arcade.overlap(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
+	this.game.physics.arcade.collide(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
+	this.game.physics.arcade.collide(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
 	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
 
 	// Player dead?
