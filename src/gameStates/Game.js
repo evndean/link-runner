@@ -91,18 +91,7 @@ LinkRunner.Game.prototype.update = function () {
 	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
 
 	// Player dead?
-	if (this.player.isDead())
-	{
-		this.player.destroy();
-
-		this.batteryDrainTimer.stop();
-
-		this.stateText.text = 'GAME OVER\nClick to\nrestart level';
-		this.stateText.visible = true;
-
-		// 'click to restart' handler
-		this.game.input.onTap.addOnce(this.reloadLevel, this);
-	}
+	if ( this.player.isDead() ) { this.loseLevel(); }
 
 };
 
@@ -178,6 +167,20 @@ LinkRunner.Game.prototype.winLevel = function () {
 	// Call the start function
 	continueKey.onDown.addOnce(this.nextLevel, this);
 	
+};
+
+LinkRunner.Game.prototype.loseLevel = function () {
+
+	this.player.destroy();
+
+	this.batteryDrainTimer.stop();
+
+	this.stateText.text = 'GAME OVER\nClick to\nrestart level';
+	this.stateText.visible = true;
+
+	// 'click to restart' handler
+	this.game.input.onTap.addOnce(this.reloadLevel, this);
+
 };
 
 LinkRunner.Game.prototype.nextLevel = function () {
