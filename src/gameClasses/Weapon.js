@@ -39,6 +39,8 @@ Weapon.Beam.prototype.fire = function (source) {
 
 	this.getFirstExists(false).fire(x, y, this.bulletSpeed, direction);
 
+	source.batteryLevel -= source.batteryDrainWhenShooting;
+
 	this.nextFire = this.game.time.time + this.fireRate;
 
 };
