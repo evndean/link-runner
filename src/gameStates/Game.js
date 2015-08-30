@@ -91,18 +91,7 @@ LinkRunner.Game.prototype.update = function () {
 	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
 
 	// Player dead?
-	if (this.player.isDead())
-	{
-		this.player.destroy();
-
-		this.batteryDrainTimer.stop();
-
-		this.stateText.text = 'GAME OVER\nClick to\nrestart level';
-		this.stateText.visible = true;
-
-		// 'click to restart' handler
-		this.game.input.onTap.addOnce(this.reloadLevel, this);
-	}
+	if ( this.player.isDead() ) { this.loseLevel(); }
 
 };
 
@@ -155,11 +144,7 @@ LinkRunner.Game.prototype.hudUpdate = function () {
 LinkRunner.Game.prototype.winLevel = function () {
 
 	// Disable player input
-	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.UP);
-	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.DOWN);
-	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.LEFT);
-	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.RIGHT);
-	this.player.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
+	this.player.disableInput();
 
 	// Did the player win the game?
 	if (this.game.currentLevel == levels.length) {
@@ -178,6 +163,25 @@ LinkRunner.Game.prototype.winLevel = function () {
 	// Call the start function
 	continueKey.onDown.addOnce(this.nextLevel, this);
 	
+};
+
+LinkRunner.Game.prototype.loseLevel = function () {
+
+	// Remove the player sprite
+	this.player.destroy();
+
+	this.batteryDrainTimer.stop();
+
+	// Display 'game over' text
+	this.stateText.text = 'GAME OVER\n\nPRESS SPACE\nTO RESTART LEVEL';
+	this.stateText.visible = true;
+
+	// Create 'space to restart' button handler
+	var restartKey = this.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
+
+	// Call the reload level function
+	restartKey.onDown.addOnce(this.reloadLevel, this);
+
 };
 
 LinkRunner.Game.prototype.nextLevel = function () {

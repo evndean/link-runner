@@ -115,6 +115,16 @@ Drone.prototype.onCollision = function () {
 
 };
 
+Drone.prototype.disableInput = function () {
+
+	this.game.input.keyboard.removeKey(Phaser.Keyboard.UP);
+	this.game.input.keyboard.removeKey(Phaser.Keyboard.DOWN);
+	this.game.input.keyboard.removeKey(Phaser.Keyboard.LEFT);
+	this.game.input.keyboard.removeKey(Phaser.Keyboard.RIGHT);
+	this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
+
+};
+
 Drone.prototype.isDead = function () {
 
 	if (this.health < 1)
