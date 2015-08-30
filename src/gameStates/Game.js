@@ -15,6 +15,7 @@ LinkRunner.Game.prototype.create = function () {
 	this.currentTilemap        = level.tilemap;
 	this.currentTilesets       = level.tilesets;
 	this.currentCollisionTiles = level.collisionTiles;
+	this.currentBarriers       = level.barriers;
 	this.startTileId           = level.startTileId;
 
 	// Add tilemap
@@ -118,11 +119,18 @@ LinkRunner.Game.prototype.enableTileCollisions = function (tiles, layer) {
 
 LinkRunner.Game.prototype.addBarriersToMap = function () {
 
-	this.barriers = this.game.add.group();
-	this.barriers.enableBody = true;
-	this.map.createFromObjects('barriers', 4, 'dirtSheet', 3, true, false, this.barriers);
-	this.barriers.physicsBodyType = Phaser.Physics.ARCADE;
-	this.barriers.setAll('body.immovable', true);
+	if (this.currentBarriers.length > 0)
+	{
+		this.barriers = this.game.add.group();
+		this.barriers.enableBody = true;
+		for ( i = 0; i < this.currentBarriers.length; i++ )
+		{
+			var b = this.currentBarriers[i];
+			this.map.createFromObjects(b.groupName, b.layerName, b.spriteKey, b.spriteFrame, true, false, this.barriers);
+		}
+		this.barriers.physicsBodyType = Phaser.Physics.ARCADE;
+		this.barriers.setAll('body.immovable', true);
+	}
 
 };
 

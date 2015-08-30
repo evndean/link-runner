@@ -18,9 +18,9 @@ var levels = [
 		collisionTiles: {
 			background: [],
 			pipeWalls: [ 27 ],
-			targets: [],
 			endZone: [ 12 ],
 		},
+		barriers: [],
 	}, {
 		tilemap: "training-02",
 		tilesets: [
@@ -36,9 +36,16 @@ var levels = [
 		collisionTiles: {
 			background: [],
 			pipeWalls: [ 27 ],
-			targets: [ 3 ],
 			endZone: [ 12 ],
 		},
+		barriers: [
+			{
+				groupName: 'barriers',
+				layerName: 4,
+				spriteKey: 'dirtSheet',
+				spriteFrame: 3,
+			},
+		],
 	}, {
 		tilemap: "map-01",
 		tilesets: [
@@ -54,8 +61,8 @@ var levels = [
 		collisionTiles: {
 			background: [],
 			pipeWalls: [ 27 ],
-			targets: [],
 			endZone: [ 12 ],
 		},
+		barriers: [],
 	},
 ]
