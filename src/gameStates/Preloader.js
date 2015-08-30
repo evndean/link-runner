@@ -21,7 +21,7 @@ LinkRunner.Preloader.prototype.preload = function () {
 	this.load.image('lazerBeam', 'assets/spritesheets/bullet.png');
 	this.load.audio('laser', 'assets/audio/33-laser.wav');
 	this.load.audio('crash', 'assets/audio/14-crash.wav');
-	this.load.audio('disintegrate', 'assets/audio/12-disintegrate.wav');
+	this.load.audio('disintegrate', 'assets/audio/17-disintegrate.wav');
 
 };
 
