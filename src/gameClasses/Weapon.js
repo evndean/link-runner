@@ -16,8 +16,9 @@ Weapon.Beam = function (game) {
 
 	}
 
-	// Sound effect
+	// Sound effects
 	this.laserSound = game.add.audio('laser');
+	this.barrierDestroySound = game.add.audio('disintegrate');
 
 	return this;
 
@@ -55,5 +56,8 @@ Weapon.Beam.prototype.hitBarrier = function(beam, layer) {
 
 	beam.kill();
 	layer.kill();
+
+	// Play sound
+	this.weapon.barrierDestroySound.play();
 
 };
