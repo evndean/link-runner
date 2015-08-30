@@ -16,8 +16,9 @@ Weapon.Beam = function (game) {
 
 	}
 
-	// Sound effect
+	// Sound effects
 	this.laserSound = game.add.audio('laser');
+	this.barrierDestroySound = game.add.audio('disintegrate');
 
 	return this;
 
@@ -39,6 +40,8 @@ Weapon.Beam.prototype.fire = function (source) {
 
 	this.getFirstExists(false).fire(x, y, this.bulletSpeed, direction);
 
+	source.batteryLevel -= source.batteryDrainWhenShooting;
+
 	this.nextFire = this.game.time.time + this.fireRate;
 
 };
@@ -46,5 +49,15 @@ Weapon.Beam.prototype.fire = function (source) {
 Weapon.Beam.prototype.hitWall = function(beam, layer) {
 
 	beam.kill();
+
+}
+
+Weapon.Beam.prototype.hitBarrier = function(beam, layer) {
+
+	beam.kill();
+	layer.kill();
+
+	// Play sound
+	this.weapon.barrierDestroySound.play();
 
 };

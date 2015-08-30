@@ -15,6 +15,7 @@ LinkRunner.Game.prototype.create = function () {
 	this.currentTilemap        = level.tilemap;
 	this.currentTilesets       = level.tilesets;
 	this.currentCollisionTiles = level.collisionTiles;
+	this.currentBarriers       = level.barriers;
 	this.startTileId           = level.startTileId;
 
 	// Add tilemap
@@ -35,12 +36,15 @@ LinkRunner.Game.prototype.create = function () {
 	this.startZone.visible = false;
 	this.endZone.visible = false;
 
-	// Enable collisions
-	this.enableCollisions(this.currentCollisionTiles.pipeWalls, this.pipeWalls);
-	this.enableCollisions(this.currentCollisionTiles.endZone, this.endZone);
+	// Enable collisions for tilemap items
+	this.enableTileCollisions(this.currentCollisionTiles.pipeWalls, this.pipeWalls);
+	this.enableTileCollisions(this.currentCollisionTiles.endZone, this.endZone);
 
 	// Resize the world
 	this.background.resizeWorld();
+
+	// Add barriers group (to shoot at)
+	this.addBarriersToMap();
 
 	// Get player's starting coordinates
 	var startTile = this.map.searchTileIndex(this.startTileId, 0, false, this.startZone);
@@ -81,7 +85,9 @@ LinkRunner.Game.prototype.update = function () {
 
 	// Check for collisions
 	this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
-	this.game.physics.arcade.overlap(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
+	this.game.physics.arcade.collide(this.player, this.barriers, this.player.onCollision, this.player.beforeCollision, this.player);;
+	this.game.physics.arcade.collide(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
+	this.game.physics.arcade.collide(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
 	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
 
 	// Player dead?
@@ -100,13 +106,30 @@ LinkRunner.Game.prototype.update = function () {
 
 };
 
-LinkRunner.Game.prototype.enableCollisions = function (tiles, layer) {
+LinkRunner.Game.prototype.enableTileCollisions = function (tiles, layer) {
 
 	if (tiles.length > 0) {
 		for (i=0; i<tiles.length; i++) {
 			var tile = tiles[i];
 			this.map.setCollision(tile, true, layer);
 		}
+	}
+
+};
+
+LinkRunner.Game.prototype.addBarriersToMap = function () {
+
+	if (this.currentBarriers.length > 0)
+	{
+		this.barriers = this.game.add.group();
+		this.barriers.enableBody = true;
+		for ( i = 0; i < this.currentBarriers.length; i++ )
+		{
+			var b = this.currentBarriers[i];
+			this.map.createFromObjects(b.groupName, b.layerName, b.spriteKey, b.spriteFrame, true, false, this.barriers);
+		}
+		this.barriers.physicsBodyType = Phaser.Physics.ARCADE;
+		this.barriers.setAll('body.immovable', true);
 	}
 
 };

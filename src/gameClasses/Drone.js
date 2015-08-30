@@ -4,6 +4,7 @@ var Drone = function(game, x, y) {
 
 	this.health = 3;
 	this.batteryLevel = 100;
+	this.batteryDrainWhenShooting = 5;
 	this.hardCollision = 50;
 	this.velocityAtCollision = null;
 
@@ -86,10 +87,7 @@ Drone.prototype.update = function() {
 	}
 
 	// Firing?
-	if (this.fireButton.isDown)
-	{
-		this.weapon.fire(this);
-	}
+	if (this.fireButton.isDown) { this.weapon.fire(this); }
 
 };
 
