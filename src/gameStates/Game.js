@@ -43,11 +43,7 @@ LinkRunner.Game.prototype.create = function () {
 	this.background.resizeWorld();
 
 	// Add barriers group (to shoot at)
-	this.barriers = this.game.add.group();
-	this.barriers.enableBody = true;
-	this.map.createFromObjects('barriers', 4, 'dirtSheet', 3, true, false, this.barriers);
-	this.barriers.physicsBodyType = Phaser.Physics.ARCADE;
-	this.barriers.setAll('body.immovable', true);
+	this.addBarriersToMap();
 
 	// Get player's starting coordinates
 	var startTile = this.map.searchTileIndex(this.startTileId, 0, false, this.startZone);
@@ -117,6 +113,16 @@ LinkRunner.Game.prototype.enableTileCollisions = function (tiles, layer) {
 			this.map.setCollision(tile, true, layer);
 		}
 	}
+
+};
+
+LinkRunner.Game.prototype.addBarriersToMap = function () {
+
+	this.barriers = this.game.add.group();
+	this.barriers.enableBody = true;
+	this.map.createFromObjects('barriers', 4, 'dirtSheet', 3, true, false, this.barriers);
+	this.barriers.physicsBodyType = Phaser.Physics.ARCADE;
+	this.barriers.setAll('body.immovable', true);
 
 };
 
