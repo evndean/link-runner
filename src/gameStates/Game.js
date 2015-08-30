@@ -167,15 +167,20 @@ LinkRunner.Game.prototype.winLevel = function () {
 
 LinkRunner.Game.prototype.loseLevel = function () {
 
+	// Remove the player sprite
 	this.player.destroy();
 
 	this.batteryDrainTimer.stop();
 
-	this.stateText.text = 'GAME OVER\nClick to\nrestart level';
+	// Display 'game over' text
+	this.stateText.text = 'GAME OVER\n\nPRESS SPACE\nTO RESTART LEVEL';
 	this.stateText.visible = true;
 
-	// 'click to restart' handler
-	this.game.input.onTap.addOnce(this.reloadLevel, this);
+	// Create 'space to restart' button handler
+	var restartKey = this.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
+
+	// Call the reload level function
+	restartKey.onDown.addOnce(this.reloadLevel, this);
 
 };
 
