@@ -73,6 +73,13 @@ LinkRunner.Game.prototype.create = function () {
 	// Show HUD
 	this.game.$hud.show();
 
+	// Initialize hudEmphasis variable
+	this.hudEmphasis = '';
+
+	// Create event listener for HUD blinking
+	this.hudBlink = new Phaser.Signal();
+	this.hudBlink.add(this.handleHudBlink, this); // listener, listenerContext, priority, args
+
 	// Set the game's start time (miliseconds)
 	this.startTime = this.game.time.now;
 
@@ -131,14 +138,43 @@ LinkRunner.Game.prototype.hudUpdate = function () {
 
 	var hudHTML;
 	hudHTML = "<p>";
+
+	// Health
+	if ( this.hudEmphasis == 'health' ) { hudHTML += "<em>"; }
 	hudHTML += "Health: " + this.player.health;
+	if ( this.hudEmphasis == 'health' ) { hudHTML += "</em>"; }
+
 	hudHTML += "  |  ";
+
+	// Battery
+	if ( this.hudEmphasis == 'battery' ) { hudHTML += "<em>"; }
 	hudHTML += "Battery: " + this.player.batteryLevel;
+	if ( this.hudEmphasis == 'battery' ) { hudHTML += "</em>"; }
+
 	hudHTML += "  |  ";
+
+	// Time elapsed
+	if ( this.hudEmphasis == 'time' ) { hudHTML += "<em>"; }
 	hudHTML += "Time elapsed: " + minutes + ":" + ( seconds < 10 ? "0" + seconds : seconds );
+	if ( this.hudEmphasis == 'time' ) { hudHTML += "</em>"; }
+
 	hudHTML += "</p>";
+
 	this.game.$hud.html(hudHTML);
 	
+};
+
+LinkRunner.Game.prototype.handleHudBlink = function ( section ) {
+
+	// Set the duration for hud text to be emphasized in
+	var hudBlinkTime = 500;
+
+	// set text to emphasize
+	this.hudEmphasis = section;
+
+	// Remove text emphasis after the duration defined by hudBlinkTime
+	this.game.time.events.add( hudBlinkTime, function(){ this.hudEmphasis = '' }, this );
+
 };
 
 LinkRunner.Game.prototype.winLevel = function () {

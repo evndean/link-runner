@@ -111,6 +111,9 @@ Drone.prototype.onCollision = function () {
 		// Reduce health by 1
 		this.health = this.health - 1;
 
+		// Dispatch event to emphasize health text
+		LinkRunner.Game.hudBlink.dispatch('health');
+
 	}
 
 };
