@@ -10,6 +10,10 @@ LinkRunner.Boot.prototype.init = function () {
 	// Stop Phaser from automatically pausing if the browser tab loses focus
 	this.stage.disableVisibilityChange = true;
 
+	// Hide the HUD DIV
+	this.game.$hud = $('#hud');
+	this.game.$hud.hide();
+
 };
 
 LinkRunner.Boot.prototype.preload = function () {
