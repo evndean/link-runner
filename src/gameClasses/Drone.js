@@ -3,16 +3,14 @@ var Drone = function(game, x, y) {
 	Phaser.Sprite.call(this, game, x, y, 'drone');
 
 	// Health
-	this.alive = true;
-	this.health = 3;
-	this.hardCollision = 50;
-	this.velocityAtCollision = null;
+	this.alive = true;  // Initialize variable to track whether the player is alive or not
+	this.health = 3;    // Initialize the player's health level
 
 	// Battery
-	this.batteryLevel = 100;
-	this.batteryDrainTimer = 0;
-	this.batteryDrainInterval = 5000;
-	this.batteryDrainWhenFiring = 5;
+	this.batteryLevel = 100;           // Initialize the drone's battery level
+	this.batteryDrainTimer = 0;        // Initialize timer to slowly drain the battery
+	this.batteryDrainInterval = 5000;  // Time (in ms) after which the battery level is reduced by 1
+	this.batteryDrainWhenFiring = 5;   // Amount by which the battery is drained when a shot is fired
 
 	// Physics
 	game.physics.enable(this);
@@ -23,10 +21,13 @@ var Drone = function(game, x, y) {
 	this.body.maxVelocity.set(250);
 	this.body.drag.set(150);
 
+	this.hardCollision = 50;          // Minimum velocity required for a collision to hurt the player
+	this.velocityAtCollision = null;  // Initialize variable used for collision handling
+
 	// Animations
 	this.animations.add('fly', null, 25, true);
 	this.animations.play('fly');
-	this.anchor.setTo(0.5, 0.5)  // Sprite flips on center axis when switching directions.
+	this.anchor.setTo(0.5, 0.5);  // Sprite flips on center axis when switching directions.
 
 	// Sound Effects
 	this.crashSound = game.add.audio('crash');
@@ -35,7 +36,7 @@ var Drone = function(game, x, y) {
 	this.weapon = new Weapon.Beam(this.game);
 
 	// Add player controls
-	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
+	this.cursors = game.input.keyboard.createCursorKeys();  // up, down, left, and right
 	this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 };
