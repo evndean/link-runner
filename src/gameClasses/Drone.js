@@ -2,6 +2,8 @@ var Drone = function(game, x, y) {
 
 	Phaser.Sprite.call(this, game, x, y, 'drone');
 
+	// Health
+	this.alive = true;
 	this.health = 3;
 	this.batteryLevel = 100;
 	this.batteryDrainWhenShooting = 5;
@@ -39,6 +41,9 @@ Drone.prototype.constructor = Drone;
 
 // Update loop (utomatically called by World.update)
 Drone.prototype.update = function() {
+
+	// Check health
+	if (this.health < 1 || this.batteryLevel < 1) { this.alive = false; }
 
 	// Reset acceleration
 	this.body.acceleration.setTo(0, 0);
@@ -109,7 +114,7 @@ Drone.prototype.onCollision = function () {
 		this.crashSound.play();
 
 		// Reduce health by 1
-		this.health = this.health - 1;
+		this.health -= 1;
 
 	}
 
@@ -122,21 +127,5 @@ Drone.prototype.disableInput = function () {
 	this.game.input.keyboard.removeKey(Phaser.Keyboard.LEFT);
 	this.game.input.keyboard.removeKey(Phaser.Keyboard.RIGHT);
 	this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
-
-};
-
-Drone.prototype.isDead = function () {
-
-	if (this.health < 1)
-	{
-		return true;
-	}
-
-	if (this.batteryLevel < 1)
-	{
-		return true;
-	}
-
-	return false;
 
 };

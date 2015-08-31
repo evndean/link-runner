@@ -80,18 +80,24 @@ LinkRunner.Game.prototype.create = function () {
 
 LinkRunner.Game.prototype.update = function () {
 
-	// Update the HUD
-	this.hudUpdate();
+	if ( this.player.alive ) {
 
-	// Check for collisions
-	this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
-	this.game.physics.arcade.collide(this.player, this.barriers, this.player.onCollision, this.player.beforeCollision, this.player);;
-	this.game.physics.arcade.collide(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
-	this.game.physics.arcade.collide(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
-	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
+		// Update the HUD
+		this.hudUpdate();
 
-	// Player dead?
-	if ( this.player.isDead() ) { this.loseLevel(); }
+		// Check for collisions
+		this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
+		this.game.physics.arcade.collide(this.player, this.barriers, this.player.onCollision, this.player.beforeCollision, this.player);;
+		this.game.physics.arcade.collide(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
+		this.game.physics.arcade.collide(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
+		this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
+
+	} else {
+
+		// Player died, call lose level function
+		this.loseLevel();
+
+	}
 
 };
 
