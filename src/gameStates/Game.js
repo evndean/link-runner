@@ -55,11 +55,6 @@ LinkRunner.Game.prototype.create = function () {
 	this.player = new Drone(this.game, startX, startY);
 	this.game.add.existing(this.player);
 
-	// Create battery drain timer
-	this.batteryDrainTimer = this.game.time.create(false);
-	this.batteryDrainTimer.loop(5000, this.reduceBatteryPower, this);
-	this.batteryDrainTimer.start();
-
 	// Initialize game state text
 	this.stateText = this.game.add.text(400, 300,' ', { font: '42px PressStart2P', fill: '#ffffff' });
 	this.stateText.fixedToCamera = true;
@@ -80,18 +75,24 @@ LinkRunner.Game.prototype.create = function () {
 
 LinkRunner.Game.prototype.update = function () {
 
-	// Update the HUD
-	this.hudUpdate();
+	if ( this.player.alive ) {
 
-	// Check for collisions
-	this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
-	this.game.physics.arcade.collide(this.player, this.barriers, this.player.onCollision, this.player.beforeCollision, this.player);;
-	this.game.physics.arcade.collide(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
-	this.game.physics.arcade.collide(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
-	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
+		// Update the HUD
+		this.hudUpdate();
 
-	// Player dead?
-	if ( this.player.isDead() ) { this.loseLevel(); }
+		// Check for collisions
+		this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
+		this.game.physics.arcade.collide(this.player, this.barriers, this.player.onCollision, this.player.beforeCollision, this.player);;
+		this.game.physics.arcade.collide(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
+		this.game.physics.arcade.collide(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
+		this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
+
+	} else {
+
+		// Player died, call lose level function
+		this.loseLevel();
+
+	}
 
 };
 
@@ -170,8 +171,6 @@ LinkRunner.Game.prototype.loseLevel = function () {
 	// Remove the player sprite
 	this.player.destroy();
 
-	this.batteryDrainTimer.stop();
-
 	// Display 'game over' text
 	this.stateText.text = 'GAME OVER\n\nPRESS SPACE\nTO RESTART LEVEL';
 	this.stateText.visible = true;
@@ -189,12 +188,6 @@ LinkRunner.Game.prototype.nextLevel = function () {
 	this.game.currentLevel++;
 
 	this.game.state.start('Game');
-
-};
-
-LinkRunner.Game.prototype.reduceBatteryPower = function () {
-
-	this.player.batteryLevel--;
 
 };
 
