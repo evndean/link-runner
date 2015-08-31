@@ -5,10 +5,14 @@ var Drone = function(game, x, y) {
 	// Health
 	this.alive = true;
 	this.health = 3;
-	this.batteryLevel = 100;
-	this.batteryDrainWhenShooting = 5;
 	this.hardCollision = 50;
 	this.velocityAtCollision = null;
+
+	// Battery
+	this.batteryLevel = 100;
+	this.batteryDrainTimer = 0;
+	this.batteryDrainInterval = 5000;
+	this.batteryDrainWhenFiring = 5;
 
 	// Physics
 	game.physics.enable(this);
@@ -41,6 +45,17 @@ Drone.prototype.constructor = Drone;
 
 // Update loop (utomatically called by World.update)
 Drone.prototype.update = function() {
+
+	// Update battery drain timer
+	this.batteryDrainTimer += this.game.time.elapsed;
+
+	// Reduce the battery level if the interval was reached
+	if ( this.batteryDrainTimer >= this.batteryDrainInterval ) {
+
+		this.batteryDrainTimer -= this.batteryDrainInterval;
+		this.reduceBatteryLevel(1);
+
+	}
 
 	// Check health
 	if (this.health < 1 || this.batteryLevel < 1) { this.alive = false; }
@@ -117,6 +132,12 @@ Drone.prototype.onCollision = function () {
 		this.health -= 1;
 
 	}
+
+};
+
+Drone.prototype.reduceBatteryLevel = function ( amount ) {
+
+	this.batteryLevel -= amount;
 
 };
 

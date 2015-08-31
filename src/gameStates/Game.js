@@ -55,11 +55,6 @@ LinkRunner.Game.prototype.create = function () {
 	this.player = new Drone(this.game, startX, startY);
 	this.game.add.existing(this.player);
 
-	// Create battery drain timer
-	this.batteryDrainTimer = this.game.time.create(false);
-	this.batteryDrainTimer.loop(5000, this.reduceBatteryPower, this);
-	this.batteryDrainTimer.start();
-
 	// Initialize game state text
 	this.stateText = this.game.add.text(400, 300,' ', { font: '42px PressStart2P', fill: '#ffffff' });
 	this.stateText.fixedToCamera = true;
@@ -176,8 +171,6 @@ LinkRunner.Game.prototype.loseLevel = function () {
 	// Remove the player sprite
 	this.player.destroy();
 
-	this.batteryDrainTimer.stop();
-
 	// Display 'game over' text
 	this.stateText.text = 'GAME OVER\n\nPRESS SPACE\nTO RESTART LEVEL';
 	this.stateText.visible = true;
@@ -195,12 +188,6 @@ LinkRunner.Game.prototype.nextLevel = function () {
 	this.game.currentLevel++;
 
 	this.game.state.start('Game');
-
-};
-
-LinkRunner.Game.prototype.reduceBatteryPower = function () {
-
-	this.player.batteryLevel--;
 
 };
 
