@@ -51,7 +51,7 @@ Drone.prototype.update = function() {
 	this.batteryDrainTimer += this.game.time.elapsed;
 
 	// Reduce the battery level if the interval was reached
-	if ( this.batteryDrainTimer >= this.batteryDrainInterval ) {
+	if (this.batteryDrainTimer >= this.batteryDrainInterval) {
 
 		this.batteryDrainTimer -= this.batteryDrainInterval;
 		this.reduceBatteryLevel(1);
@@ -65,47 +65,33 @@ Drone.prototype.update = function() {
 	this.body.acceleration.setTo(0, 0);
 
 	// Movement left/right
-	if (this.cursors.left.isDown)
-	{
+	if (this.cursors.left.isDown) {
+
 		this.body.acceleration.x = -250;
 		this.scale.x = -1;
-		if (this.angle > -14)
-		{
-			// Rotate sprite to the left
-			this.angle--;
-		}
-	}
-	else if (this.cursors.right.isDown)
-	{
+
+		// Rotate left
+		if (this.angle > -14) { this.angle--; }
+
+	} else if (this.cursors.right.isDown) {
+
 		this.body.acceleration.x = 250;
 		this.scale.x = 1;
-		if (this.angle < 14)
-		{
-			// Rotate sprite to the right
-			this.angle++;
-		}
-	}
-	else
-	{
-		if (this.angle > 0)
-		{
-			this.angle--;
-		}
-		if (this.angle < 0)
-		{
-			this.angle++;
-		}
+
+		// Rotate right
+		if (this.angle < 14) { this.angle++; }
+
+	} else {
+
+		// Rotate back to level
+		if (this.angle > 0) { this.angle--; }
+		if (this.angle < 0) { this.angle++; }
+
 	}
 
 	// Movement up/down
-	if (this.cursors.up.isDown)
-	{
-		this.body.acceleration.y -= 250;
-	}
-	if (this.cursors.down.isDown)
-	{
-		this.body.acceleration.y += 250;
-	}
+	if (this.cursors.up.isDown) { this.body.acceleration.y -= 250; }
+	if (this.cursors.down.isDown) { this.body.acceleration.y += 250; }
 
 	// Firing?
 	if (this.fireButton.isDown) { this.weapon.fire(this); }
@@ -136,7 +122,7 @@ Drone.prototype.onCollision = function () {
 
 };
 
-Drone.prototype.reduceBatteryLevel = function ( amount ) {
+Drone.prototype.reduceBatteryLevel = function (amount) {
 
 	this.batteryLevel -= amount;
 
