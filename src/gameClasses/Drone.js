@@ -27,17 +27,28 @@ var Drone = function(game, x, y) {
 	// Animations
 	this.animations.add('fly', null, 25, true);
 	this.animations.play('fly');
-	this.anchor.setTo(0.5, 0.5);  // Sprite flips on center axis when switching directions.
+	this.anchor.setTo(0.5, 0.5);  // Sprite flips on center axis when switching directions
+	this.rotate = null;       // Initialize variable used for rotating the drone during the update phase
+	this.maxRotation = 14;        // The maximum value for the angle of rotation of a sprite
 
 	// Sound Effects
 	this.crashSound = game.add.audio('crash');
 
 	// Weapon
 	this.weapon = new Weapon.Beam(this.game);
+	this.isFiring = false;  // Initialize variable to track whether or not the player is currently firing
 
-	// Add player controls
-	this.cursors = game.input.keyboard.createCursorKeys();  // up, down, left, and right
-	this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	// Add event listeners for player controls
+	this.game.controls.up.onDown.add(this.handleUpOnDown, this);
+	this.game.controls.up.onUp.add(this.handleUpOnUp, this);
+	this.game.controls.down.onDown.add(this.handleDownOnDown, this);
+	this.game.controls.down.onUp.add(this.handleDownOnUp, this);
+	this.game.controls.left.onDown.add(this.handleLeftOnDown, this);
+	this.game.controls.left.onUp.add(this.handleLeftOnUp, this);
+	this.game.controls.right.onDown.add(this.handleRightOnDown, this);
+	this.game.controls.right.onUp.add(this.handleRightOnUp, this);
+	this.game.controls.shoot.onDown.add(this.handleShootOnDown, this);
+	this.game.controls.shoot.onUp.add(this.handleShootOnUp, this);
 
 };
 
@@ -58,43 +69,86 @@ Drone.prototype.update = function() {
 
 	}
 
+	// Check rotation
+	if (this.rotate == 'right') {
+		if (Math.abs(this.angle) >= this.maxRotation) {
+			this.rotate == null;
+		} else {
+			this.angle++;
+		}
+	}
+	if (this.rotate == 'left') {
+		if (Math.abs(this.angle) >= this.maxRotation) {
+			this.rotate = null;
+		} else {
+			this.angle--;
+		}
+	}
+	if (this.rotate == 'center') {
+		if (this.angle == 0) {
+			this.rotate == null;
+		} else if (this.angle < 0) {
+			this.angle++;
+		} else {
+			this.angle--;
+		}
+	}
+
 	// Check health
 	if (this.health < 1 || this.batteryLevel < 1) { this.alive = false; }
 
-	// Reset acceleration
-	this.body.acceleration.setTo(0, 0);
+	// Is the player firing the laser?
+	if (this.isFiring) { this.weapon.fire(this); }
 
-	// Movement left/right
-	if (this.cursors.left.isDown) {
+};
 
-		this.body.acceleration.x = -250;
-		this.scale.x = -1;
+Drone.prototype.handleUpOnDown = function () {
+	this.body.acceleration.y = -250;
+};
 
-		// Rotate left
-		if (this.angle > -14) { this.angle--; }
+Drone.prototype.handleUpOnUp = function () {
+	this.body.acceleration.y = 0;
+};
 
-	} else if (this.cursors.right.isDown) {
+Drone.prototype.handleDownOnDown = function () {
+	this.body.acceleration.y = 250;
+};
 
-		this.body.acceleration.x = 250;
-		this.scale.x = 1;
+Drone.prototype.handleDownOnUp = function () {
+	this.body.acceleration.y = 0;
+};
 
-		// Rotate right
-		if (this.angle < 14) { this.angle++; }
+Drone.prototype.handleRightOnDown = function () {
+	this.body.acceleration.x = 250;
+	this.scale.x = 1;
+	this.rotate = 'right';
+};
 
-	} else {
+Drone.prototype.handleRightOnUp = function () {
+	this.body.acceleration.x = 0;
+	this.rotate = 'center';
+};
 
-		// Rotate back to level
-		if (this.angle > 0) { this.angle--; }
-		if (this.angle < 0) { this.angle++; }
+Drone.prototype.handleLeftOnDown = function () {
+	this.body.acceleration.x = -250;
+	this.scale.x = -1;
+	this.rotate = 'left';
+};
 
-	}
+Drone.prototype.handleLeftOnUp = function () {
+	this.body.acceleration.x = 0;
+	this.rotate = 'center';
+};
 
-	// Movement up/down
-	if (this.cursors.up.isDown) { this.body.acceleration.y -= 250; }
-	if (this.cursors.down.isDown) { this.body.acceleration.y += 250; }
+Drone.prototype.handleShootOnDown = function () {
 
-	// Firing?
-	if (this.fireButton.isDown) { this.weapon.fire(this); }
+	this.isFiring = true;
+
+};
+
+Drone.prototype.handleShootOnUp = function () {
+
+	this.isFiring = false;
 
 };
 
@@ -125,15 +179,5 @@ Drone.prototype.onCollision = function () {
 Drone.prototype.reduceBatteryLevel = function (amount) {
 
 	this.batteryLevel -= amount;
-
-};
-
-Drone.prototype.disableInput = function () {
-
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.UP);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.DOWN);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.LEFT);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.RIGHT);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
 
 };
