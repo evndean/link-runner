@@ -27,7 +27,9 @@ var Drone = function(game, x, y) {
 	// Animations
 	this.animations.add('fly', null, 25, true);
 	this.animations.play('fly');
-	this.anchor.setTo(0.5, 0.5);  // Sprite flips on center axis when switching directions.
+	this.anchor.setTo(0.5, 0.5);  // Sprite flips on center axis when switching directions
+	this.rotate = null;       // Initialize variable used for rotating the drone during the update phase
+	this.maxRotation = 14;        // The maximum value for the angle of rotation of a sprite
 
 	// Sound Effects
 	this.crashSound = game.add.audio('crash');
@@ -67,6 +69,31 @@ Drone.prototype.update = function() {
 
 	}
 
+	// Check rotation
+	if (this.rotate == 'right') {
+		if (Math.abs(this.angle) >= this.maxRotation) {
+			this.rotate == null;
+		} else {
+			this.angle++;
+		}
+	}
+	if (this.rotate == 'left') {
+		if (Math.abs(this.angle) >= this.maxRotation) {
+			this.rotate = null;
+		} else {
+			this.angle--;
+		}
+	}
+	if (this.rotate == 'center') {
+		if (this.angle == 0) {
+			this.rotate == null;
+		} else if (this.angle < 0) {
+			this.angle++;
+		} else {
+			this.angle--;
+		}
+	}
+
 	// Check health
 	if (this.health < 1 || this.batteryLevel < 1) { this.alive = false; }
 
@@ -94,23 +121,23 @@ Drone.prototype.handleDownOnUp = function () {
 Drone.prototype.handleRightOnDown = function () {
 	this.body.acceleration.x = 250;
 	this.scale.x = 1;
-	// rotate right
+	this.rotate = 'right';
 };
 
 Drone.prototype.handleRightOnUp = function () {
 	this.body.acceleration.x = 0;
-	// rotate to center
+	this.rotate = 'center';
 };
 
 Drone.prototype.handleLeftOnDown = function () {
 	this.body.acceleration.x = -250;
 	this.scale.x = -1;
-	//rotate left
+	this.rotate = 'left';
 };
 
 Drone.prototype.handleLeftOnUp = function () {
 	this.body.acceleration.x = 0;
-	// rotate to center
+	this.rotate = 'center';
 };
 
 Drone.prototype.handleShootOnDown = function () {
