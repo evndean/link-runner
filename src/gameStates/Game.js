@@ -148,25 +148,40 @@ LinkRunner.Game.prototype.hudUpdate = function () {
 
 LinkRunner.Game.prototype.winLevel = function () {
 
-	// Disable player input
-	this.player.disableInput();
+	// If the player was holding keys, send a release message
+	this.game.controls.up.onUp.dispatch();
+	this.game.controls.down.onUp.dispatch();
+	this.game.controls.left.onUp.dispatch();
+	this.game.controls.right.onUp.dispatch();
+	this.game.controls.shoot.onUp.dispatch();
+
+	// Remove event listeners (from the player)
+	this.game.controls.up.onDown.removeAll(this.player);
+	this.game.controls.up.onUp.removeAll(this.player);
+	this.game.controls.down.onDown.removeAll(this.player);
+	this.game.controls.down.onUp.removeAll(this.player);
+	this.game.controls.left.onDown.removeAll(this.player);
+	this.game.controls.left.onUp.removeAll(this.player);
+	this.game.controls.right.onDown.removeAll(this.player);
+	this.game.controls.right.onUp.removeAll(this.player);
+	this.game.controls.shoot.onDown.removeAll(this.player);
+	this.game.controls.shoot.onUp.removeAll(this.player);
 
 	// Did the player win the game?
 	if (this.game.currentLevel == levels.length) {
 
 		this.game.state.start('Win');
 
+	} else {
+
+		// Display text
+		this.stateText.text = 'LEVEL COMPLETE\n\nPRESS SPACE\nTO CONTINUE';
+		this.stateText.visible = true;
+
+		// Add event handler to advance to the next level
+		this.game.controls.shoot.onDown.addOnce(this.nextLevel, this);
+
 	}
-
-	// Display text
-	this.stateText.text = 'LEVEL COMPLETE\n\nPRESS SPACE\nTO CONTINUE';
-	this.stateText.visible = true;
-
-	// Wait for player input
-	var continueKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-	// Call the start function
-	continueKey.onDown.addOnce(this.nextLevel, this);
 	
 };
 

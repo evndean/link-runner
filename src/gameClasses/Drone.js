@@ -181,13 +181,3 @@ Drone.prototype.reduceBatteryLevel = function (amount) {
 	this.batteryLevel -= amount;
 
 };
-
-Drone.prototype.disableInput = function () {
-
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.UP);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.DOWN);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.LEFT);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.RIGHT);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
-
-};
