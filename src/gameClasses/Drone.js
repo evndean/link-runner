@@ -34,10 +34,19 @@ var Drone = function(game, x, y) {
 
 	// Weapon
 	this.weapon = new Weapon.Beam(this.game);
+	this.isFiring = false;  // Initialize variable to track whether or not the player is currently firing
 
-	// Add player controls
-	this.cursors = game.input.keyboard.createCursorKeys();  // up, down, left, and right
-	this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	// Add event listeners for player controls
+	this.game.controls.up.onDown.add(this.handleUpOnDown, this);
+	this.game.controls.up.onUp.add(this.handleUpOnUp, this);
+	this.game.controls.down.onDown.add(this.handleDownOnDown, this);
+	this.game.controls.down.onUp.add(this.handleDownOnUp, this);
+	this.game.controls.left.onDown.add(this.handleLeftOnDown, this);
+	this.game.controls.left.onUp.add(this.handleLeftOnUp, this);
+	this.game.controls.right.onDown.add(this.handleRightOnDown, this);
+	this.game.controls.right.onUp.add(this.handleRightOnUp, this);
+	this.game.controls.shoot.onDown.add(this.handleShootOnDown, this);
+	this.game.controls.shoot.onUp.add(this.handleShootOnUp, this);
 
 };
 
@@ -61,40 +70,58 @@ Drone.prototype.update = function() {
 	// Check health
 	if (this.health < 1 || this.batteryLevel < 1) { this.alive = false; }
 
-	// Reset acceleration
-	this.body.acceleration.setTo(0, 0);
+	// Is the player firing the laser?
+	if (this.isFiring) { this.weapon.fire(this); }
 
-	// Movement left/right
-	if (this.cursors.left.isDown) {
+};
 
-		this.body.acceleration.x = -250;
-		this.scale.x = -1;
+Drone.prototype.handleUpOnDown = function () {
+	this.body.acceleration.y = -250;
+};
 
-		// Rotate left
-		if (this.angle > -14) { this.angle--; }
+Drone.prototype.handleUpOnUp = function () {
+	this.body.acceleration.y = 0;
+};
 
-	} else if (this.cursors.right.isDown) {
+Drone.prototype.handleDownOnDown = function () {
+	this.body.acceleration.y = 250;
+};
 
-		this.body.acceleration.x = 250;
-		this.scale.x = 1;
+Drone.prototype.handleDownOnUp = function () {
+	this.body.acceleration.y = 0;
+};
 
-		// Rotate right
-		if (this.angle < 14) { this.angle++; }
+Drone.prototype.handleRightOnDown = function () {
+	this.body.acceleration.x = 250;
+	this.scale.x = 1;
+	// rotate right
+};
 
-	} else {
+Drone.prototype.handleRightOnUp = function () {
+	this.body.acceleration.x = 0;
+	// rotate to center
+};
 
-		// Rotate back to level
-		if (this.angle > 0) { this.angle--; }
-		if (this.angle < 0) { this.angle++; }
+Drone.prototype.handleLeftOnDown = function () {
+	this.body.acceleration.x = -250;
+	this.scale.x = -1;
+	//rotate left
+};
 
-	}
+Drone.prototype.handleLeftOnUp = function () {
+	this.body.acceleration.x = 0;
+	// rotate to center
+};
 
-	// Movement up/down
-	if (this.cursors.up.isDown) { this.body.acceleration.y -= 250; }
-	if (this.cursors.down.isDown) { this.body.acceleration.y += 250; }
+Drone.prototype.handleShootOnDown = function () {
 
-	// Firing?
-	if (this.fireButton.isDown) { this.weapon.fire(this); }
+	this.isFiring = true;
+
+};
+
+Drone.prototype.handleShootOnUp = function () {
+
+	this.isFiring = false;
 
 };
 

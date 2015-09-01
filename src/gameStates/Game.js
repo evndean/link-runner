@@ -51,6 +51,10 @@ LinkRunner.Game.prototype.create = function () {
 	var startX = startTile.worldX + startTile.centerX;
 	var startY = startTile.worldY + startTile.centerY;
 
+	// Create controls
+	this.game.controls = this.game.input.keyboard.createCursorKeys();  // up, down, left, and right
+	this.game.controls.shoot = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
 	// Create player
 	this.player = new Drone(this.game, startX, startY);
 	this.game.add.existing(this.player);
