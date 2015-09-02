@@ -6,9 +6,15 @@ LinkRunner.Game.prototype.preload = function () {
 
 	// Load assets if needed
 
+	// DEBUG - enable abvanced timing so we can measure FPS
+	this.game.time.advancedTiming = true;
+
 };
 
 LinkRunner.Game.prototype.create = function () {
+
+	// DEBUG - let's skip the first two levels
+	this.game.currentLevel = 3;
 
 	// Get data for the current level from the levels data structure
 	var level = levels[this.game.currentLevel-1];
@@ -50,6 +56,12 @@ LinkRunner.Game.prototype.create = function () {
 	var startTile = this.map.searchTileIndex(this.startTileId, 0, false, this.startZone);
 	var startX = startTile.worldX + startTile.centerX;
 	var startY = startTile.worldY + startTile.centerY;
+
+	// DEBUG - Try removing some layers
+	// this.background.destroy();
+	// this.pipeWalls.destroy();
+	// this.startZone.destroy();
+	// this.endZone.destroy();
 
 	// Create controls
 	this.game.controls = this.game.input.keyboard.createCursorKeys();  // up, down, left, and right
@@ -97,6 +109,13 @@ LinkRunner.Game.prototype.update = function () {
 		this.loseLevel();
 
 	}
+
+};
+
+LinkRunner.Game.prototype.render = function () {
+
+	// DEBUG - show FPS
+	this.game.debug.text(this.game.time.fps || '--', 20, 150, '#ffffff');
 
 };
 
