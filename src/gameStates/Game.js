@@ -51,14 +51,13 @@ LinkRunner.Game.prototype.create = function () {
 	var startX = startTile.worldX + startTile.centerX;
 	var startY = startTile.worldY + startTile.centerY;
 
+	// Create controls
+	this.game.controls = this.game.input.keyboard.createCursorKeys();  // up, down, left, and right
+	this.game.controls.shoot = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
 	// Create player
 	this.player = new Drone(this.game, startX, startY);
 	this.game.add.existing(this.player);
-
-	// Create battery drain timer
-	this.batteryDrainTimer = this.game.time.create(false);
-	this.batteryDrainTimer.loop(5000, this.reduceBatteryPower, this);
-	this.batteryDrainTimer.start();
 
 	// Initialize game state text
 	this.stateText = this.game.add.text(400, 300,' ', { font: '42px PressStart2P', fill: '#ffffff' });
@@ -90,18 +89,24 @@ LinkRunner.Game.prototype.create = function () {
 
 LinkRunner.Game.prototype.update = function () {
 
-	// Update the HUD
-	this.hudUpdate();
+	if ( this.player.alive ) {
 
-	// Check for collisions
-	this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
-	this.game.physics.arcade.collide(this.player, this.barriers, this.player.onCollision, this.player.beforeCollision, this.player);;
-	this.game.physics.arcade.collide(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
-	this.game.physics.arcade.collide(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
-	this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
+		// Update the HUD
+		this.hudUpdate();
 
-	// Player dead?
-	if ( this.player.isDead() ) { this.loseLevel(); }
+		// Check for collisions
+		this.game.physics.arcade.collide(this.player, this.pipeWalls, this.player.onCollision, this.player.beforeCollision, this.player);
+		this.game.physics.arcade.collide(this.player, this.barriers, this.player.onCollision, this.player.beforeCollision, this.player);;
+		this.game.physics.arcade.collide(this.player.weapon.children, this.pipeWalls, this.player.weapon.hitWall, null, this.player);
+		this.game.physics.arcade.collide(this.player.weapon.children, this.barriers, this.player.weapon.hitBarrier, null, this.player);
+		this.game.physics.arcade.overlap(this.player, this.endZone, this.winLevel, null, this);
+
+	} else {
+
+		// Player died, call lose level function
+		this.loseLevel();
+
+	}
 
 };
 
@@ -209,25 +214,40 @@ LinkRunner.Game.prototype.handleHudBlink = function (section) {
 
 LinkRunner.Game.prototype.winLevel = function () {
 
-	// Disable player input
-	this.player.disableInput();
+	// If the player was holding keys, send a release message
+	this.game.controls.up.onUp.dispatch();
+	this.game.controls.down.onUp.dispatch();
+	this.game.controls.left.onUp.dispatch();
+	this.game.controls.right.onUp.dispatch();
+	this.game.controls.shoot.onUp.dispatch();
+
+	// Remove event listeners (from the player)
+	this.game.controls.up.onDown.removeAll(this.player);
+	this.game.controls.up.onUp.removeAll(this.player);
+	this.game.controls.down.onDown.removeAll(this.player);
+	this.game.controls.down.onUp.removeAll(this.player);
+	this.game.controls.left.onDown.removeAll(this.player);
+	this.game.controls.left.onUp.removeAll(this.player);
+	this.game.controls.right.onDown.removeAll(this.player);
+	this.game.controls.right.onUp.removeAll(this.player);
+	this.game.controls.shoot.onDown.removeAll(this.player);
+	this.game.controls.shoot.onUp.removeAll(this.player);
 
 	// Did the player win the game?
 	if (this.game.currentLevel == levels.length) {
 
 		this.game.state.start('Win');
 
+	} else {
+
+		// Display text
+		this.stateText.text = 'LEVEL COMPLETE\n\nPRESS SPACE\nTO CONTINUE';
+		this.stateText.visible = true;
+
+		// Add event handler to advance to the next level
+		this.game.controls.shoot.onDown.addOnce(this.nextLevel, this);
+
 	}
-
-	// Display text
-	this.stateText.text = 'LEVEL COMPLETE\n\nPRESS SPACE\nTO CONTINUE';
-	this.stateText.visible = true;
-
-	// Wait for player input
-	var continueKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-	// Call the start function
-	continueKey.onDown.addOnce(this.nextLevel, this);
 	
 };
 
@@ -235,8 +255,6 @@ LinkRunner.Game.prototype.loseLevel = function () {
 
 	// Remove the player sprite
 	this.player.destroy();
-
-	this.batteryDrainTimer.stop();
 
 	// Display 'game over' text
 	this.stateText.text = 'GAME OVER\n\nPRESS SPACE\nTO RESTART LEVEL';
@@ -255,12 +273,6 @@ LinkRunner.Game.prototype.nextLevel = function () {
 	this.game.currentLevel++;
 
 	this.game.state.start('Game');
-
-};
-
-LinkRunner.Game.prototype.reduceBatteryPower = function () {
-
-	this.player.batteryLevel--;
 
 };
 
