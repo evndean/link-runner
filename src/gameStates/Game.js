@@ -82,14 +82,17 @@ LinkRunner.Game.prototype.create = function () {
 	this.game.events.hudBlink = new Phaser.Signal();
 	this.game.events.hudBlink.add(this.handleHudBlink, this); // listener, listenerContext, priority, args
 
-	// Set the game's start time (miliseconds)
-	this.startTime = this.game.time.now;
+	// Initialize variable for time tracking
+	this.elapsedTimeMS = 0;
 
 };
 
 LinkRunner.Game.prototype.update = function () {
 
 	if ( this.player.alive ) {
+
+		// Update time tracking
+		this.elapsedTimeMS += this.game.time.physicsElapsedMS;
 
 		// Update the HUD
 		this.hudUpdate();
@@ -140,7 +143,7 @@ LinkRunner.Game.prototype.addBarriersToMap = function () {
 
 LinkRunner.Game.prototype.hudUpdate = function () {
 
-	var elapsedSeconds = this.timeElapsedSeconds();
+	var elapsedSeconds = Math.floor(this.elapsedTimeMS / 1000);
 	var minutes = Math.floor(elapsedSeconds / 60) % 60;
 	var seconds = elapsedSeconds % 60;
 
@@ -279,13 +282,5 @@ LinkRunner.Game.prototype.nextLevel = function () {
 LinkRunner.Game.prototype.reloadLevel = function () {
 
 	this.game.state.start('Game');
-
-};
-
-LinkRunner.Game.prototype.timeElapsedSeconds = function () {
-
-	var elapsedMs = this.game.time.now - this.startTime;
-
-	return Math.floor(elapsedMs / 1000);
 
 };
