@@ -2,11 +2,15 @@ var Drone = function(game, x, y) {
 
 	Phaser.Sprite.call(this, game, x, y, 'drone');
 
-	this.health = 3;
-	this.batteryLevel = 100;
-	this.batteryDrainWhenShooting = 5;
-	this.hardCollision = 50;
-	this.velocityAtCollision = null;
+	// Health
+	this.alive = true;  // Initialize variable to track whether the player is alive or not
+	this.health = 3;    // Initialize the player's health level
+
+	// Battery
+	this.batteryLevel = 100;           // Initialize the drone's battery level
+	this.batteryDrainTimer = 0;        // Initialize timer to slowly drain the battery
+	this.batteryDrainInterval = 5000;  // Time (in ms) after which the battery level is reduced by 1
+	this.batteryDrainWhenFiring = 5;   // Amount by which the battery is drained when a shot is fired
 
 	// Physics
 	game.physics.enable(this);
@@ -17,20 +21,34 @@ var Drone = function(game, x, y) {
 	this.body.maxVelocity.set(250);
 	this.body.drag.set(150);
 
+	this.hardCollision = 50;          // Minimum velocity required for a collision to hurt the player
+	this.velocityAtCollision = null;  // Initialize variable used for collision handling
+
 	// Animations
 	this.animations.add('fly', null, 25, true);
 	this.animations.play('fly');
-	this.anchor.setTo(0.5, 0.5)  // Sprite flips on center axis when switching directions.
+	this.anchor.setTo(0.5, 0.5);  // Sprite flips on center axis when switching directions
+	this.rotate = null;       // Initialize variable used for rotating the drone during the update phase
+	this.maxRotation = 14;        // The maximum value for the angle of rotation of a sprite
 
 	// Sound Effects
 	this.crashSound = game.add.audio('crash');
 
 	// Weapon
 	this.weapon = new Weapon.Beam(this.game);
+	this.isFiring = false;  // Initialize variable to track whether or not the player is currently firing
 
-	// Add player controls
-	this.cursors = game.input.keyboard.createCursorKeys(); // up, down, left, and right
-	this.fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	// Add event listeners for player controls
+	this.game.controls.up.onDown.add(this.handleUpOnDown, this);
+	this.game.controls.up.onUp.add(this.handleUpOnUp, this);
+	this.game.controls.down.onDown.add(this.handleDownOnDown, this);
+	this.game.controls.down.onUp.add(this.handleDownOnUp, this);
+	this.game.controls.left.onDown.add(this.handleLeftOnDown, this);
+	this.game.controls.left.onUp.add(this.handleLeftOnUp, this);
+	this.game.controls.right.onDown.add(this.handleRightOnDown, this);
+	this.game.controls.right.onUp.add(this.handleRightOnUp, this);
+	this.game.controls.shoot.onDown.add(this.handleShootOnDown, this);
+	this.game.controls.shoot.onUp.add(this.handleShootOnUp, this);
 
 };
 
@@ -40,54 +58,97 @@ Drone.prototype.constructor = Drone;
 // Update loop (utomatically called by World.update)
 Drone.prototype.update = function() {
 
-	// Reset acceleration
-	this.body.acceleration.setTo(0, 0);
+	// Update battery drain timer
+	this.batteryDrainTimer += this.game.time.elapsed;
 
-	// Movement left/right
-	if (this.cursors.left.isDown)
-	{
-		this.body.acceleration.x = -250;
-		this.scale.x = -1;
-		if (this.angle > -14)
-		{
-			// Rotate sprite to the left
-			this.angle--;
-		}
+	// Reduce the battery level if the interval was reached
+	if (this.batteryDrainTimer >= this.batteryDrainInterval) {
+
+		this.batteryDrainTimer -= this.batteryDrainInterval;
+		this.reduceBatteryLevel(1);
+
 	}
-	else if (this.cursors.right.isDown)
-	{
-		this.body.acceleration.x = 250;
-		this.scale.x = 1;
-		if (this.angle < 14)
-		{
-			// Rotate sprite to the right
+
+	// Check rotation
+	if (this.rotate == 'right') {
+		if (Math.abs(this.angle) >= this.maxRotation) {
+			this.rotate == null;
+		} else {
 			this.angle++;
 		}
 	}
-	else
-	{
-		if (this.angle > 0)
-		{
+	if (this.rotate == 'left') {
+		if (Math.abs(this.angle) >= this.maxRotation) {
+			this.rotate = null;
+		} else {
 			this.angle--;
 		}
-		if (this.angle < 0)
-		{
+	}
+	if (this.rotate == 'center') {
+		if (this.angle == 0) {
+			this.rotate == null;
+		} else if (this.angle < 0) {
 			this.angle++;
+		} else {
+			this.angle--;
 		}
 	}
 
-	// Movement up/down
-	if (this.cursors.up.isDown)
-	{
-		this.body.acceleration.y -= 250;
-	}
-	if (this.cursors.down.isDown)
-	{
-		this.body.acceleration.y += 250;
-	}
+	// Check health
+	if (this.health < 1 || this.batteryLevel < 1) { this.alive = false; }
 
-	// Firing?
-	if (this.fireButton.isDown) { this.weapon.fire(this); }
+	// Is the player firing the laser?
+	if (this.isFiring) { this.weapon.fire(this); }
+
+};
+
+Drone.prototype.handleUpOnDown = function () {
+	this.body.acceleration.y = -250;
+};
+
+Drone.prototype.handleUpOnUp = function () {
+	this.body.acceleration.y = 0;
+};
+
+Drone.prototype.handleDownOnDown = function () {
+	this.body.acceleration.y = 250;
+};
+
+Drone.prototype.handleDownOnUp = function () {
+	this.body.acceleration.y = 0;
+};
+
+Drone.prototype.handleRightOnDown = function () {
+	this.body.acceleration.x = 250;
+	this.scale.x = 1;
+	this.rotate = 'right';
+};
+
+Drone.prototype.handleRightOnUp = function () {
+	this.body.acceleration.x = 0;
+	this.rotate = 'center';
+};
+
+Drone.prototype.handleLeftOnDown = function () {
+	this.body.acceleration.x = -250;
+	this.scale.x = -1;
+	this.rotate = 'left';
+};
+
+Drone.prototype.handleLeftOnUp = function () {
+	this.body.acceleration.x = 0;
+	this.rotate = 'center';
+};
+
+Drone.prototype.handleShootOnDown = function () {
+
+	this.isFiring = true;
+
+};
+
+Drone.prototype.handleShootOnUp = function () {
+
+	this.isFiring = false;
 
 };
 
@@ -109,34 +170,17 @@ Drone.prototype.onCollision = function () {
 		this.crashSound.play();
 
 		// Reduce health by 1
-		this.health = this.health - 1;
+		this.health -= 1;
+
+		// Dispatch event to emphasize health text
+		this.game.events.hudBlink.dispatch('health');
 
 	}
 
 };
 
-Drone.prototype.disableInput = function () {
+Drone.prototype.reduceBatteryLevel = function (amount) {
 
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.UP);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.DOWN);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.LEFT);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.RIGHT);
-	this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);
-
-};
-
-Drone.prototype.isDead = function () {
-
-	if (this.health < 1)
-	{
-		return true;
-	}
-
-	if (this.batteryLevel < 1)
-	{
-		return true;
-	}
-
-	return false;
+	this.batteryLevel -= amount;
 
 };
