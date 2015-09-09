@@ -28,7 +28,6 @@ var Drone = function(game, x, y) {
 	this.animations.add('fly', null, 25, true);
 	this.animations.play('fly');
 	this.anchor.setTo(0.5, 0.5);  // Sprite flips on center axis when switching directions
-	this.rotate = null;       // Initialize variable used for rotating the drone during the update phase
 	this.maxRotation = 14;        // The maximum value for the angle of rotation of a sprite
 
 	// Sound Effects
@@ -38,17 +37,23 @@ var Drone = function(game, x, y) {
 	this.weapon = new Weapon.Beam(this.game);
 	this.isFiring = false;  // Initialize variable to track whether or not the player is currently firing
 
+	// Initialize control tracking variables
+	this.movingLeft = false;
+	this.movingRight = false;
+	this.movingUp = false;
+	this.movingDown = false;
+
 	// Add event listeners for player controls
-	this.game.controls.up.onDown.add(this.handleUpOnDown, this);
-	this.game.controls.up.onUp.add(this.handleUpOnUp, this);
-	this.game.controls.down.onDown.add(this.handleDownOnDown, this);
-	this.game.controls.down.onUp.add(this.handleDownOnUp, this);
-	this.game.controls.left.onDown.add(this.handleLeftOnDown, this);
-	this.game.controls.left.onUp.add(this.handleLeftOnUp, this);
-	this.game.controls.right.onDown.add(this.handleRightOnDown, this);
-	this.game.controls.right.onUp.add(this.handleRightOnUp, this);
-	this.game.controls.shoot.onDown.add(this.handleShootOnDown, this);
-	this.game.controls.shoot.onUp.add(this.handleShootOnUp, this);
+	this.game.controls.up.onDown.add(function() { this.movingUp = true; }, this);
+	this.game.controls.up.onUp.add(function() { this.movingUp = false; }, this);
+	this.game.controls.down.onDown.add(function() { this.movingDown = true; }, this);
+	this.game.controls.down.onUp.add(function() { this.movingDown = false; }, this);
+	this.game.controls.left.onDown.add(function() { this.movingLeft = true; }, this);
+	this.game.controls.left.onUp.add(function() { this.movingLeft = false; }, this);
+	this.game.controls.right.onDown.add(function() { this.movingRight = true; }, this);
+	this.game.controls.right.onUp.add(function() { this.movingRight = false; }, this);
+	this.game.controls.shoot.onDown.add(function() { this.isFiring = true; }, this);
+	this.game.controls.shoot.onUp.add(function() { this.isFiring = false; }, this);
 
 };
 
@@ -69,29 +74,30 @@ Drone.prototype.update = function() {
 
 	}
 
-	// Check rotation
-	if (this.rotate == 'right') {
-		if (Math.abs(this.angle) >= this.maxRotation) {
-			this.rotate == null;
+	// Reset acceleration
+	this.body.acceleration.x = 0;
+	this.body.acceleration.y = 0;
+
+	// Update acceleration based on player control status
+	if (this.movingRight) { this.body.acceleration.x += 250; }
+	if (this.movingLeft)  { this.body.acceleration.x -= 250; }
+	if (this.movingUp)    { this.body.acceleration.y -= 250; }
+	if (this.movingDown)  { this.body.acceleration.y += 250; }
+
+	if (this.body.acceleration.x != 0) {
+		// Make the drone face the direction it's accelerating
+		this.scale.x = this.body.acceleration.x / Math.abs(this.body.acceleration.x);
+
+		// Make the drone rotate in the direction it's accelerating
+		if (this.body.acceleration.x > 0) {
+			if (Math.abs(this.angle) <= this.maxRotation) { this.angle++; }
 		} else {
-			this.angle++;
+			if (Math.abs(this.angle) <= this.maxRotation) { this.angle--; }
 		}
-	}
-	if (this.rotate == 'left') {
-		if (Math.abs(this.angle) >= this.maxRotation) {
-			this.rotate = null;
-		} else {
-			this.angle--;
-		}
-	}
-	if (this.rotate == 'center') {
-		if (this.angle == 0) {
-			this.rotate == null;
-		} else if (this.angle < 0) {
-			this.angle++;
-		} else {
-			this.angle--;
-		}
+	} else {
+		// Rotate the drone back to center
+		if (this.angle > 0) { this.angle--; }
+		if (this.angle < 0) { this.angle++; }
 	}
 
 	// Check health
@@ -99,56 +105,6 @@ Drone.prototype.update = function() {
 
 	// Is the player firing the laser?
 	if (this.isFiring) { this.weapon.fire(this); }
-
-};
-
-Drone.prototype.handleUpOnDown = function () {
-	this.body.acceleration.y = -250;
-};
-
-Drone.prototype.handleUpOnUp = function () {
-	this.body.acceleration.y = 0;
-};
-
-Drone.prototype.handleDownOnDown = function () {
-	this.body.acceleration.y = 250;
-};
-
-Drone.prototype.handleDownOnUp = function () {
-	this.body.acceleration.y = 0;
-};
-
-Drone.prototype.handleRightOnDown = function () {
-	this.body.acceleration.x = 250;
-	this.scale.x = 1;
-	this.rotate = 'right';
-};
-
-Drone.prototype.handleRightOnUp = function () {
-	this.body.acceleration.x = 0;
-	this.rotate = 'center';
-};
-
-Drone.prototype.handleLeftOnDown = function () {
-	this.body.acceleration.x = -250;
-	this.scale.x = -1;
-	this.rotate = 'left';
-};
-
-Drone.prototype.handleLeftOnUp = function () {
-	this.body.acceleration.x = 0;
-	this.rotate = 'center';
-};
-
-Drone.prototype.handleShootOnDown = function () {
-
-	this.isFiring = true;
-
-};
-
-Drone.prototype.handleShootOnUp = function () {
-
-	this.isFiring = false;
 
 };
 
