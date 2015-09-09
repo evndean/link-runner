@@ -28,3 +28,8 @@ body {
 	text-align: center;
 	vertical-align: middle;
 }
+
+#hud p em {
+	color: red;
+	font-style: normal;
+}
